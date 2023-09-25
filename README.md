@@ -6,8 +6,11 @@ The project structure follows the best practices and conventions of a Node.js ap
 
 The project has directories based on the functionality and type while justifying the directory name.
 
+> To test the routes and functionality either you can use **POSTMAN** or with the frontend that is another repo on the GitHub (still in developing phase): <a href="https://github.com/SAINIAbhishek/react_auth-frontend" target="_blank">React Auth Frontend</a>.)
+
 Following are the features of this project:
 - This backend is written in Typescript: It enhances the development experience by adding static typing to JavaScript, resulting in more reliable and maintainable codebases. It helps catch potential errors during development and provides better code completion and tooling support. 
+- Limiter to restrict too many request for the login route.
 - Centralised Error handling.
 - Centralised Response handling.
 - Version system for the routes.
@@ -29,6 +32,7 @@ Following are the features of this project:
 - JWT
 - Cookies
 - Winston
+- Rate Limiter
 
 ## How to setup the project
 
@@ -68,7 +72,6 @@ require('crypto').randomBytes(64).toString('hex')
 <hr>
 
 #### TODO
-- Login Limiter (express-rate-limit)
 - Forget Password
 - Remember Me
 - Roles

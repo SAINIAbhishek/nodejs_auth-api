@@ -12,7 +12,11 @@ const router = express.Router();
 
 router
   .route('/login')
-  .post(validator(USER_JOI_LOGIN_SCHEMA), AuthController.login);
+  .post(
+    validator(USER_JOI_LOGIN_SCHEMA),
+    AuthController.loginLimiter,
+    AuthController.login
+  );
 
 router
   .route('/register')

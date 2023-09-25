@@ -9,6 +9,7 @@ enum StatusCode {
   FAILURE = '10001',
   RETRY = '10002',
   INVALID_ACCESS_TOKEN = '10003',
+  MANY_REQUESTS = '10004',
 }
 
 enum ResponseStatus {
@@ -17,6 +18,7 @@ enum ResponseStatus {
   UNAUTHORIZED = 401,
   FORBIDDEN = 403,
   NOT_FOUND = 404,
+  MANY_REQUESTS = 429,
   INTERNAL_ERROR = 500,
 }
 
@@ -56,6 +58,12 @@ abstract class ApiResponse {
 export class AuthFailureResponse extends ApiResponse {
   constructor(message = 'Authentication Failure') {
     super(StatusCode.FAILURE, ResponseStatus.UNAUTHORIZED, message);
+  }
+}
+
+export class ManyRequestResponse extends ApiResponse {
+  constructor(message = 'Too Many Requests') {
+    super(StatusCode.MANY_REQUESTS, ResponseStatus.MANY_REQUESTS, message);
   }
 }
 
@@ -110,7 +118,7 @@ export class SuccessResponse<T> extends ApiResponse {
 }
 
 export class AccessTokenErrorResponse extends ApiResponse {
-  private instruction = 'refresh_token';
+  private instruction = 'refreshToken';
 
   constructor(message = 'Access token invalid') {
     super(

@@ -5,6 +5,7 @@ import {
   BadRequestResponse,
   ForbiddenResponse,
   InternalErrorResponse,
+  ManyRequestResponse,
   NotFoundResponse,
 } from './ApiResponse';
 import { ENVIRONMENT } from '../config';
@@ -20,6 +21,7 @@ export enum ErrorType {
   NO_DATA = 'No Data Error',
   BAD_REQUEST = 'Bad Request Error',
   FORBIDDEN = 'Forbidden Error',
+  MANY_REQUESTS = 'Too Many Requests',
 }
 
 export abstract class ApiError extends Error {
@@ -50,6 +52,9 @@ export abstract class ApiError extends Error {
 
       case ErrorType.FORBIDDEN:
         return new ForbiddenResponse(err.message).send(res);
+
+      case ErrorType.MANY_REQUESTS:
+        return new ManyRequestResponse(err.message).send(res);
 
       default: {
         let message = err.message;

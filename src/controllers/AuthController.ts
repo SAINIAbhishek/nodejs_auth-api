@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Logger from '../middleware/Logger';
 import {
+  ManyRequestResponse,
   SuccessMsgResponse,
   SuccessResponse,
   TokenRefreshResponse,
@@ -9,18 +10,30 @@ import UserHelper from '../helpers/UserHelper';
 import { AuthFailureError, BadRequestError } from '../middleware/ApiError';
 import bcrypt from 'bcrypt';
 import AuthHelper from '../helpers/AuthHelper';
-import { COOKIE, TOKEN_INFO } from '../config';
+import { COOKIE, LIMITER, TOKEN_INFO } from '../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Types } from 'mongoose';
+import rateLimit from 'express-rate-limit';
 
 class AuthController {
   test = asyncHandler(async (req, res) => {
     Logger.info('User test');
-
     new SuccessResponse('Test successfully!', {}).send(res);
   });
 
-  isAuthorized = asyncHandler((req, res) => {
+  loginLimiter = rateLimit({
+    windowMs: LIMITER.loginWS,
+    max: LIMITER.loginMaxAttempt,
+    message: 'Too many login attempts, please try again later.',
+    handler: (req, res, next, options) => {
+      Logger.info(`${options.message}, Method: ${req.method}, Url: ${req.url}`);
+      new ManyRequestResponse(options.message).send(res);
+    },
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  });
+
+  isAuthorized = asyncHandler((req) => {
     const token = AuthHelper.getAccessToken(req.headers.authorization); // Express headers are auto converted to lowercase
 
     const accessTokenPayload = jwt.verify(token, TOKEN_INFO.accessTokenSecret);
@@ -79,6 +92,7 @@ class AuthController {
 
   logout = asyncHandler(async (req, res) => {
     const refreshToken = (req.cookies && req.cookies[COOKIE.login]) ?? null;
+
     if (!!refreshToken) {
       res.clearCookie(COOKIE.login, {
         httpOnly: true,
