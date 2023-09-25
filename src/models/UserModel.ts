@@ -7,12 +7,14 @@ export const COLLECTION_NAME = 'users';
 
 export default interface User {
   _id: Types.ObjectId;
-  firstname?: string;
-  lastname?: string;
-  email?: string;
+  firstname: string;
+  lastname: string;
+  name?: string;
+  email: string;
   password?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
+  passwordUpdatedAt?: string;
 }
 
 const UserSchema = new Schema<User>(
@@ -32,17 +34,22 @@ const UserSchema = new Schema<User>(
     email: {
       type: Schema.Types.String,
       unique: true,
-      sparse: true, // allows null
       trim: true,
       minlength: 5,
       maxlength: 50,
       required: true,
+      lowercase: true,
     },
     password: {
       type: Schema.Types.String,
       required: true,
       minlength: 8,
       maxlength: 255,
+      select: false,
+    },
+    passwordUpdatedAt: {
+      type: Schema.Types.Date,
+      select: false,
     },
   },
   {
@@ -52,6 +59,8 @@ const UserSchema = new Schema<User>(
 );
 
 UserSchema.index({ email: 1 });
+UserSchema.index({ firstname: 1 });
+UserSchema.index({ firstname: 1, lastname: 1 });
 
 // a virtual property for name
 UserSchema.virtual('name').get(function () {

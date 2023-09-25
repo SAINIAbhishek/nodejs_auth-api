@@ -14,9 +14,10 @@ import { COOKIE, LIMITER, TOKEN_INFO } from '../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Types } from 'mongoose';
 import rateLimit from 'express-rate-limit';
+import { ProtectedRequest, Token } from 'app-request';
 
 class AuthController {
-  test = asyncHandler(async (req, res) => {
+  test = asyncHandler(async (_, res) => {
     Logger.info('User test');
     new SuccessResponse('Test successfully!', {}).send(res);
   });
@@ -25,7 +26,7 @@ class AuthController {
     windowMs: LIMITER.loginWS,
     max: LIMITER.loginMaxAttempt,
     message: 'Too many login attempts, please try again later.',
-    handler: (req, res, next, options) => {
+    handler: (req, res, _, options) => {
       Logger.info(`${options.message}, Method: ${req.method}, Url: ${req.url}`);
       new ManyRequestResponse(options.message).send(res);
     },
@@ -33,27 +34,40 @@ class AuthController {
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   });
 
-  isAuthorized = asyncHandler((req) => {
-    const token = AuthHelper.getAccessToken(req.headers.authorization); // Express headers are auto converted to lowercase
+  isAuthorized = asyncHandler(async (req: ProtectedRequest, _, next) => {
+    const token = AuthHelper.getAccessToken(req.headers.authorization);
+    const accessTokenPayload = jwt.verify(
+      token,
+      TOKEN_INFO.accessTokenSecret
+    ) as JwtPayload;
 
-    const accessTokenPayload = jwt.verify(token, TOKEN_INFO.accessTokenSecret);
-    AuthHelper.validateTokenData(
-      <JwtPayload>accessTokenPayload,
-      'Unauthorized'
+    AuthHelper.validateTokenData(accessTokenPayload, 'Unauthorized');
+
+    const userId = accessTokenPayload.sub;
+    const user = await UserHelper.findById(
+      new Types.ObjectId(userId),
+      '+passwordUpdatedAt'
     );
+    if (!user) throw new AuthFailureError('Unauthorized');
+
+    AuthHelper.validatePasswordUpdate(accessTokenPayload, user);
+
+    req.user = UserHelper.sanitizedUser(user);
+    next();
   });
 
   login = asyncHandler(async (req, res) => {
-    const user = await UserHelper.findByEmail(req.body.email);
+    const user = await UserHelper.findByEmail(req.body.email, '+password');
     if (!user || !user.password)
       throw new BadRequestError(
         'Your email address or your password is incorrect'
       );
 
-    const match = await bcrypt.compare(req.body.password, user.password);
-    if (!match) throw new AuthFailureError('Your credentials are incorrect');
+    const isMatched = await bcrypt.compare(req.body.password, user.password);
+    if (!isMatched)
+      throw new AuthFailureError('Your credentials are incorrect');
 
-    const tokens: Tokens = AuthHelper.createTokens(user);
+    const tokens: Token = AuthHelper.createTokens(user);
 
     // create secure cookie with refresh token
     res.cookie(COOKIE.login, tokens.refreshToken, {
@@ -64,28 +78,32 @@ class AuthController {
     });
 
     new SuccessResponse('User logged in successfully', {
-      accessToken: tokens.accessToken,
+      token: tokens.accessToken,
+      user: UserHelper.sanitizedUser(user),
     }).send(res);
   });
 
-  refreshToken = asyncHandler(async (req, res) => {
+  refreshToken = asyncHandler(async (req: ProtectedRequest, res) => {
     const refreshToken = (req.cookies && req.cookies[COOKIE.login]) ?? null;
-    if (!refreshToken) {
-      throw new AuthFailureError('Unauthorized');
-    }
+    if (!refreshToken) throw new AuthFailureError('Unauthorized');
 
     const refreshTokenPayload = jwt.verify(
       refreshToken,
       TOKEN_INFO.refreshTokenSecret
-    );
-    AuthHelper.validateTokenData(<JwtPayload>refreshTokenPayload);
+    ) as JwtPayload;
 
+    AuthHelper.validateTokenData(refreshTokenPayload);
+
+    const userId = refreshTokenPayload.sub;
     const user = await UserHelper.findById(
-      new Types.ObjectId((<JwtPayload>refreshTokenPayload).sub)
+      new Types.ObjectId(userId),
+      '+passwordUpdatedAt'
     );
     if (!user) throw new AuthFailureError('Unauthorized');
 
-    const tokens: Tokens = AuthHelper.createTokens(user);
+    AuthHelper.validatePasswordUpdate(refreshTokenPayload, user);
+
+    const tokens: Token = AuthHelper.createTokens(user);
 
     new TokenRefreshResponse('Token issued', tokens.accessToken).send(res);
   });
