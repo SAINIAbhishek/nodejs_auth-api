@@ -3,6 +3,11 @@ export const PORT = process.env.PORT;
 export const CORS_URL = process.env.CORS_URL;
 export const API_VERSION = process.env.API_VERSION;
 
+export const LIMITER = {
+  loginWS: parseInt(process.env.LIMITER_LOGIN_WS || '120000'),
+  loginMaxAttempt: parseInt(process.env.LIMITER_LOGIN_ATTEMT || '5'),
+};
+
 export const COOKIE = {
   login: process.env.COOKIE_LOGIN || '',
   maxAge: parseInt(process.env.COOKIE_MAX_AGE_SEC || '0'),
