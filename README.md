@@ -1,4 +1,4 @@
-# Node.js Authentication & Authorization Backend Typescript Project
+# Node.js Authentication & Authorization Backend Typescript Project (Learning project)
 
 A scalable and well-structured Node.js backend project designed to handle the scale and complexity of an application. It is designed while taking into consideration the different environments.
 
