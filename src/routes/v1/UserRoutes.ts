@@ -3,6 +3,7 @@ import validator, { ValidationSource } from '../../helpers/Validator';
 import {
   USER_JOI_CREATE_SCHEMA,
   USER_JOI_ID_SCHEMA,
+  USER_JOI_UPDATE_SCHEMA,
 } from '../../models/UserModel';
 import UserController from '../../controllers/UserController';
 import { AUTH_JOI_SCHEMA } from '../../helpers/AuthHelper';
@@ -28,6 +29,10 @@ router.use('/:id', validator(USER_JOI_ID_SCHEMA, ValidationSource.PARAM));
 router
   .route('/:id')
   .get(UserController.getUser)
+  .put(
+    validator(USER_JOI_UPDATE_SCHEMA, ValidationSource.BODY),
+    UserController.updateUser
+  )
   .delete(UserController.deleteUser);
 
 export default router;

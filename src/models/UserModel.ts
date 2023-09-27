@@ -89,6 +89,12 @@ export const USER_JOI_CREATE_SCHEMA: Joi.ObjectSchema = Joi.object({
   password: Joi.string().min(8).max(255).required(),
 });
 
+export const USER_JOI_UPDATE_SCHEMA: Joi.ObjectSchema = Joi.object({
+  firstname: Joi.string().max(200).optional(),
+  lastname: Joi.string().max(200).optional(),
+  email: Joi.string().min(5).max(255).email().optional(),
+});
+
 export const USER_JOI_LOGIN_SCHEMA: Joi.ObjectSchema = Joi.object({
   email: Joi.string().min(5).max(255).email().required(),
   password: Joi.string().required(),

@@ -40,11 +40,40 @@ class UserController {
   });
 
   getUser = asyncHandler(async (req, res) => {
-    const user = await UserHelper.findAll({ id: req.params.id });
-    if (user) throw new NotFoundError('User not found');
+    const user = await UserHelper.findById(req.params.id);
+    if (!user) throw new NotFoundError('User not found');
 
     new SuccessResponse('User fetched successfully', {
       user: UserHelper.sanitizedUser(user),
+    }).send(res);
+  });
+
+  updateUser = asyncHandler(async (req, res) => {
+    const { email, firstname, lastname } = req.body;
+    const updateFields: any = {};
+
+    if (email) {
+      updateFields.email = email;
+    }
+    if (firstname) {
+      updateFields.firstname = firstname;
+    }
+    if (lastname) {
+      updateFields.lastname = lastname;
+    }
+
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: updateFields },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      throw new NotFoundError('User not found');
+    }
+
+    new SuccessResponse('User updated successfully', {
+      user: UserHelper.sanitizedUser(updatedUser),
     }).send(res);
   });
 

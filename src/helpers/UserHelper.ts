@@ -18,10 +18,12 @@ const sanitizedUser = (user: User): User => {
 };
 
 const findById = async (
-  id: Types.ObjectId,
+  id: string,
   selectFields = ''
 ): Promise<User | null> => {
-  return UserModel.findOne({ _id: id }).select(selectFields).exec();
+  return UserModel.findOne({ _id: new Types.ObjectId(id) })
+    .select(selectFields)
+    .exec();
 };
 
 const findByEmail = async (

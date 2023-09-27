@@ -12,7 +12,6 @@ import bcrypt from 'bcrypt';
 import AuthHelper from '../helpers/AuthHelper';
 import { COOKIE, LIMITER, TOKEN_INFO } from '../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { Types } from 'mongoose';
 import rateLimit from 'express-rate-limit';
 import { ProtectedRequest } from 'app-request';
 import { UserModel } from '../models/UserModel';
@@ -44,11 +43,8 @@ class AuthController {
 
     AuthHelper.validateTokenData(accessTokenPayload, 'Unauthorized');
 
-    const userId = accessTokenPayload.sub;
-    const user = await UserHelper.findById(
-      new Types.ObjectId(userId),
-      '+passwordUpdatedAt'
-    );
+    const userId = accessTokenPayload.sub ?? '';
+    const user = await UserHelper.findById(userId, '+passwordUpdatedAt');
     if (!user) throw new AuthFailureError('Unauthorized');
 
     AuthHelper.validatePasswordUpdate(accessTokenPayload, user);
@@ -127,11 +123,8 @@ class AuthController {
 
     AuthHelper.validateTokenData(refreshTokenPayload);
 
-    const userId = refreshTokenPayload.sub;
-    const user = await UserHelper.findById(
-      new Types.ObjectId(userId),
-      '+passwordUpdatedAt'
-    );
+    const userId = refreshTokenPayload.sub ?? '';
+    const user = await UserHelper.findById(userId, '+passwordUpdatedAt');
     if (!user) throw new AuthFailureError('Unauthorized');
 
     AuthHelper.validatePasswordUpdate(refreshTokenPayload, user);
