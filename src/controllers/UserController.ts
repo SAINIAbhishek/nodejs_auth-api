@@ -1,22 +1,19 @@
 import asyncHandler from 'express-async-handler';
 import UserHelper from '../helpers/UserHelper';
 import { BadRequestError } from '../middleware/ApiError';
-import bcrypt from 'bcrypt';
 import { UserModel } from '../models/UserModel';
 import { SuccessResponse } from '../middleware/ApiResponse';
 import AuthHelper from '../helpers/AuthHelper';
-import { Token } from 'app-request';
 
 class UserController {
-  register = asyncHandler(async (req, res) => {
+  create = asyncHandler(async (req, res) => {
     const { email, password, firstname, lastname } = req.body;
 
     const user = await UserHelper.findByEmail(email);
-    if (user) throw new BadRequestError('User already registered');
+    if (user) throw new BadRequestError('User already exists');
 
     // hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await AuthHelper.generateHashPassword(password);
 
     const userObj = {
       email,
@@ -26,11 +23,19 @@ class UserController {
     };
 
     const newUser = await UserModel.create(userObj);
-    const tokens: Token = AuthHelper.createTokens(newUser);
 
-    new SuccessResponse('User registered successfully', {
-      token: tokens.accessToken,
+    new SuccessResponse('User created successfully', {
       user: UserHelper.sanitizedUser(newUser),
+    }).send(res);
+  });
+
+  getAll = asyncHandler(async (_, res) => {
+    let users = await UserHelper.findAll();
+    users = users.map((user) => UserHelper.sanitizedUser(user));
+
+    new SuccessResponse('Users fetched successfully', {
+      user: users,
+      total: users.length,
     }).send(res);
   });
 }

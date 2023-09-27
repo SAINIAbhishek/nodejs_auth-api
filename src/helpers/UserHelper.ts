@@ -31,4 +31,11 @@ const findByEmail = async (
   return UserModel.findOne({ email: email }).select(selectFields).exec();
 };
 
-export default { findByEmail, fullName, findById, sanitizedUser };
+const findAll = async (
+  filter: object = {},
+  selectFields = ''
+): Promise<User[] | []> => {
+  return UserModel.find(filter).select(selectFields).exec();
+};
+
+export default { findByEmail, fullName, findById, sanitizedUser, findAll };
