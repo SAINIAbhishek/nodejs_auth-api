@@ -8,6 +8,16 @@ import crypto from 'crypto';
 import { Types } from 'mongoose';
 import { JoiAuthBearer } from './Validator';
 import { Token } from 'app-request';
+import bcrypt from 'bcrypt';
+
+/**
+ * to hash a given password with a generated salt
+ * @param password
+ */
+const generateHashPassword = async (password: string) => {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
+};
 
 /**
  * to check whether the user's password has been updated more recently than
@@ -133,4 +143,5 @@ export default {
   validateTokenData,
   getAccessToken,
   validatePasswordUpdate,
+  generateHashPassword,
 };

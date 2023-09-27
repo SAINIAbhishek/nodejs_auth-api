@@ -17,12 +17,6 @@ export const JoiObjectId = () =>
     return value;
   }, 'Object Id Validation');
 
-export const JoiUrlEndpoint = () =>
-  Joi.string().custom((value: string, helpers) => {
-    if (value.includes('://')) return helpers.error('any.invalid');
-    return value;
-  }, 'Url Endpoint Validation');
-
 export const JoiAuthBearer = () =>
   Joi.string().custom((value: string, helpers) => {
     if (!value.startsWith('Bearer ')) return helpers.error('any.invalid');
