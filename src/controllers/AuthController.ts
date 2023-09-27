@@ -149,7 +149,6 @@ class AuthController {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        signed: true,
       });
     }
 
