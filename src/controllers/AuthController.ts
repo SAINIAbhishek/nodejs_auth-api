@@ -14,7 +14,7 @@ import { COOKIE, LIMITER, TOKEN_INFO } from '../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Types } from 'mongoose';
 import rateLimit from 'express-rate-limit';
-import { ProtectedRequest, Token } from 'app-request';
+import { ProtectedRequest } from 'app-request';
 import { UserModel } from '../models/UserModel';
 
 class AuthController {

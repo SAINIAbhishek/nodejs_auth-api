@@ -25,6 +25,9 @@ router
 
 router.use('/:id', validator(USER_JOI_ID_SCHEMA, ValidationSource.PARAM));
 
-router.route('/:id').get(UserController.getUser);
+router
+  .route('/:id')
+  .get(UserController.getUser)
+  .delete(UserController.deleteUser);
 
 export default router;

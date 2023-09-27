@@ -34,8 +34,8 @@ class UserController {
     users = users.map((user) => UserHelper.sanitizedUser(user));
 
     new SuccessResponse('Users fetched successfully', {
-      user: users,
       total: users.length,
+      user: users,
     }).send(res);
   });
 
@@ -45,6 +45,17 @@ class UserController {
 
     new SuccessResponse('User fetched successfully', {
       user: UserHelper.sanitizedUser(user),
+    }).send(res);
+  });
+
+  deleteUser = asyncHandler(async (req, res) => {
+    const result: DeleteResult = await UserModel.deleteOne({
+      _id: req.params.id,
+    });
+    if (!result.deletedCount) throw new NotFoundError('User not found');
+
+    new SuccessResponse('User deleted successfully', {
+      userId: req.params.id,
     }).send(res);
   });
 }

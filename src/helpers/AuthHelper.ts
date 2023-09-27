@@ -7,7 +7,6 @@ import UserHelper from './UserHelper';
 import crypto from 'crypto';
 import { Types } from 'mongoose';
 import { JoiAuthBearer } from './Validator';
-import { Token } from 'app-request';
 import bcrypt from 'bcrypt';
 
 /**
