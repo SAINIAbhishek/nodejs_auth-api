@@ -12,9 +12,9 @@ import bcrypt from 'bcrypt';
 import AuthHelper from '../helpers/AuthHelper';
 import { COOKIE, LIMITER, TOKEN_INFO } from '../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { Types } from 'mongoose';
 import rateLimit from 'express-rate-limit';
-import { ProtectedRequest, Token } from 'app-request';
+import { ProtectedRequest } from 'app-request';
+import { UserModel } from '../models/UserModel';
 
 class AuthController {
   test = asyncHandler(async (_, res) => {
@@ -43,17 +43,46 @@ class AuthController {
 
     AuthHelper.validateTokenData(accessTokenPayload, 'Unauthorized');
 
-    const userId = accessTokenPayload.sub;
-    const user = await UserHelper.findById(
-      new Types.ObjectId(userId),
-      '+passwordUpdatedAt'
-    );
+    const userId = accessTokenPayload.sub ?? '';
+    const user = await UserHelper.findById(userId, '+passwordUpdatedAt');
     if (!user) throw new AuthFailureError('Unauthorized');
 
     AuthHelper.validatePasswordUpdate(accessTokenPayload, user);
 
-    req.user = UserHelper.sanitizedUser(user);
+    // attaching the information to the session object to use in next middleware function
+    req.session = {
+      ...req.session,
+      accessToken: token,
+      accessTokenPayload,
+      user: UserHelper.sanitizedUser(user),
+    };
+
     next();
+  });
+
+  register = asyncHandler(async (req, res) => {
+    const { email, password, firstname, lastname } = req.body;
+
+    const user = await UserHelper.findByEmail(email);
+    if (user) throw new BadRequestError('User already registered');
+
+    // hash password
+    const hashedPassword = await AuthHelper.generateHashPassword(password);
+
+    const userObj = {
+      email,
+      password: hashedPassword,
+      firstname,
+      lastname,
+    };
+
+    const newUser = await UserModel.create(userObj);
+    const tokens: Token = AuthHelper.createTokens(newUser);
+
+    new SuccessResponse('User registered successfully', {
+      token: tokens.accessToken,
+      user: UserHelper.sanitizedUser(newUser),
+    }).send(res);
   });
 
   login = asyncHandler(async (req, res) => {
@@ -94,11 +123,8 @@ class AuthController {
 
     AuthHelper.validateTokenData(refreshTokenPayload);
 
-    const userId = refreshTokenPayload.sub;
-    const user = await UserHelper.findById(
-      new Types.ObjectId(userId),
-      '+passwordUpdatedAt'
-    );
+    const userId = refreshTokenPayload.sub ?? '';
+    const user = await UserHelper.findById(userId, '+passwordUpdatedAt');
     if (!user) throw new AuthFailureError('Unauthorized');
 
     AuthHelper.validatePasswordUpdate(refreshTokenPayload, user);
@@ -116,7 +142,6 @@ class AuthController {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        signed: true,
       });
     }
 
