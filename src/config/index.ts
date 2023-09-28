@@ -3,6 +3,15 @@ export const PORT = process.env.PORT;
 export const CORS_URL = process.env.CORS_URL;
 export const API_VERSION = process.env.API_VERSION;
 
+export const MAILTRAP_EMAIL = {
+  testing: {
+    username: process.env.MAILTRAP_TESTING_USERNAME || '',
+    password: process.env.MAILTRAP_TESTING_PASSWORD || '',
+    host: process.env.MAILTRAP_TESTING_HOST || '',
+    port: process.env.MAILTRAP_TESTING_PORT || '',
+  },
+};
+
 export const LIMITER = {
   loginWS: parseInt(process.env.LIMITER_LOGIN_WS || '120000'),
   forgotPasswordWS: parseInt(
