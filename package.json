@@ -30,6 +30,7 @@
     "joi": "^17.7.0",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.3",
+    "nodemailer": "^6.9.5",
     "winston": "^3.10.0",
     "winston-daily-rotate-file": "^4.7.1"
   },
