@@ -22,6 +22,48 @@ class AuthController {
     new SuccessResponse('Test successfully!', {}).send(res);
   });
 
+  forgotPasswordLimiter = rateLimit({
+    windowMs: LIMITER.forgotPasswordWS,
+    max: LIMITER.loginMaxAttempt,
+    message: 'Too many reset passwords attempts, please try again later.',
+    handler: (req, res, _, options) => {
+      Logger.info(`${options.message}, Method: ${req.method}, Url: ${req.url}`);
+      new ManyRequestResponse(options.message).send(res);
+    },
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  });
+
+  forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      Logger.info(`Attempted password reset for non-existent email: ${email}`);
+      new SuccessResponse(
+        'If the email exists you will receive the email to reset the password.',
+        {}
+      ).send(res);
+    } else {
+      // a unique reset token
+      const resetToken = AuthHelper.generateTokenKey();
+
+      // Storing the raw reset token to send through email.
+      user.passwordResetTokenRaw = resetToken;
+
+      // will use this one to compare the token when it's provided during the reset process.
+      user.passwordResetToken = AuthHelper.generateHashTokenKey(resetToken);
+
+      // Setting the expiration date of a reset token
+      user.passwordResetTokenExpires = new Date(
+        Date.now() + TOKEN_INFO.passwordResetTokenValidity
+      ).toString();
+
+      await user.save({ validateBeforeSave: false });
+    }
+  });
+
   loginLimiter = rateLimit({
     windowMs: LIMITER.loginWS,
     max: LIMITER.loginMaxAttempt,

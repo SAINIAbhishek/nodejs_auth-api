@@ -16,6 +16,9 @@ export default interface User {
   createdAt?: string;
   updatedAt?: string;
   passwordUpdatedAt?: string;
+  passwordResetToken?: string;
+  passwordResetTokenRaw?: string;
+  passwordResetTokenExpires?: string;
 }
 
 const UserSchema = new Schema<User>(
@@ -49,6 +52,18 @@ const UserSchema = new Schema<User>(
       select: false,
     },
     passwordUpdatedAt: {
+      type: Schema.Types.Date,
+      select: false,
+    },
+    passwordResetToken: {
+      type: Schema.Types.String,
+      select: false,
+    },
+    passwordResetTokenRaw: {
+      type: Schema.Types.String,
+      select: false,
+    },
+    passwordResetTokenExpires: {
       type: Schema.Types.Date,
       select: false,
     },

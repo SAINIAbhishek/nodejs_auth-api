@@ -47,6 +47,14 @@ const generateTokenKey = () => {
 };
 
 /**
+ * to generate a hash (digest) of a given key using the SHA-256 hashing algorithm
+ * @param key
+ */
+const generateHashTokenKey = (key: string) => {
+  return crypto.createHash('sha256').update(key).digest('hex');
+};
+
+/**
  * is responsible for extracting the access token from an authorization header
  * that uses the "Bearer" token type.
  *
@@ -136,6 +144,10 @@ export const AUTH_JOI_SCHEMA: Joi.ObjectSchema = Joi.object({
   authorization: JoiAuthBearer().required(),
 }).unknown(true);
 
+export const AUTH_JOI_FORGOT_PASSWORD_SCHEMA: Joi.ObjectSchema = Joi.object({
+  email: Joi.string().min(5).max(255).email().required(),
+});
+
 export default {
   createTokens,
   generateTokenKey,
@@ -143,4 +155,5 @@ export default {
   getAccessToken,
   validatePasswordUpdate,
   generateHashPassword,
+  generateHashTokenKey,
 };

@@ -5,7 +5,13 @@ export const API_VERSION = process.env.API_VERSION;
 
 export const LIMITER = {
   loginWS: parseInt(process.env.LIMITER_LOGIN_WS || '120000'),
+  forgotPasswordWS: parseInt(
+    process.env.LIMITER_FORGOT_PASSWORD_WS || '120000'
+  ),
   loginMaxAttempt: parseInt(process.env.LIMITER_LOGIN_ATTEMT || '5'),
+  forgotPasswordMaxAttempt: parseInt(
+    process.env.LIMITER_FORGOT_PASSWORD_ATTEMT || '2'
+  ),
 };
 
 export const COOKIE = {
@@ -26,6 +32,9 @@ export const DB = {
 export const TOKEN_INFO = {
   accessTokenValidity: parseInt(process.env.ACCESS_TOKEN_VALIDITY_SEC || '0'),
   refreshTokenValidity: parseInt(process.env.REFRESH_TOKEN_VALIDITY_SEC || '0'),
+  passwordResetTokenValidity: parseInt(
+    process.env.PASSWORD_RESET_TOKEN_VALIDITY_SEC || '0'
+  ),
   issuer: process.env.TOKEN_ISSUER || '',
   audience: process.env.TOKEN_AUDIENCE || '',
   accessTokenSecret: process.env.ACCESS_TOKEN_SECRET_KEY || '',

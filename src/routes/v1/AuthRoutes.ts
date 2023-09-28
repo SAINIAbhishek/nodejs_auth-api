@@ -5,7 +5,10 @@ import {
   USER_JOI_REGISTER_SCHEMA,
 } from '../../models/UserModel';
 import AuthController from '../../controllers/AuthController';
-import { AUTH_JOI_SCHEMA } from '../../helpers/AuthHelper';
+import {
+  AUTH_JOI_FORGOT_PASSWORD_SCHEMA,
+  AUTH_JOI_SCHEMA,
+} from '../../helpers/AuthHelper';
 
 const router = express.Router();
 
@@ -25,6 +28,14 @@ router
   .post(
     validator(USER_JOI_REGISTER_SCHEMA, ValidationSource.BODY),
     AuthController.register
+  );
+
+router
+  .route('/forgotPassword')
+  .post(
+    validator(AUTH_JOI_FORGOT_PASSWORD_SCHEMA, ValidationSource.BODY),
+    AuthController.forgotPasswordLimiter,
+    AuthController.forgotPassword
   );
 
 router.route('/logout').post(AuthController.logout);
