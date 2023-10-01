@@ -9,6 +9,7 @@ import {
   AUTH_JOI_FORGOT_PASSWORD_SCHEMA,
   AUTH_JOI_SCHEMA,
 } from '../../helpers/AuthHelper';
+import EmailController from '../../controllers/EmailController';
 
 const router = express.Router();
 
@@ -35,7 +36,8 @@ router
   .post(
     validator(AUTH_JOI_FORGOT_PASSWORD_SCHEMA, ValidationSource.BODY),
     AuthController.forgotPasswordLimiter,
-    AuthController.forgotPassword
+    AuthController.forgotPassword,
+    EmailController.resetPassword
   );
 
 router.route('/logout').post(AuthController.logout);

@@ -32,6 +32,11 @@ Following are the features of this project:
 - Winston
 - Rate Limiter
 - Roles
+- Nodemailer
+
+## Setup MAILTRAP
+To test the email functionality I've used the Mailtrap service: <a href="https://mailtrap.io/" target="_blank">Mailtrap</a>.
+You can also create your credentials and place them in the .env file under the **Mailtrap(Email service) Info**.
 
 ## How to setup the project
 

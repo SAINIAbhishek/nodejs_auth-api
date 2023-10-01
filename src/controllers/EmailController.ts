@@ -1,0 +1,70 @@
+import asyncHandler from 'express-async-handler';
+import { ProtectedRequest } from 'app-request';
+import { API_VERSION } from '../config';
+import EmailHelper from '../helpers/EmailHelper';
+import { UserModel } from '../models/UserModel';
+import { BadRequestError, InternalError } from '../middleware/ApiError';
+import Email, { EmailModel, EmailStatusEnum } from '../models/EmailModel';
+import { SuccessResponse } from '../middleware/ApiResponse';
+import Logger from '../middleware/Logger';
+
+class EmailController {
+  resetPassword = asyncHandler(async (req: ProtectedRequest, res) => {
+    const { user } = req.email;
+    if (!user) throw new BadRequestError('User is required');
+
+    const resetUrl = `${req.protocol}://${req.get(
+      'host'
+    )}/api/${API_VERSION}/oauth/resetPassword/${user.passwordResetTokenRaw}`;
+
+    const message = `We have received a reset password request. Please use the below link to reset your password. <br><br> <a href="${resetUrl}" target="_blank">Reset password link</a> <br><br> This reset password link will be valid only for 1 hour.`;
+
+    const email: Email = {
+      to: user.email,
+      subject: 'Password change request received',
+      content: message,
+      url: resetUrl,
+    };
+
+    try {
+      await EmailHelper.testingEmailTransporter({
+        to: email.to,
+        subject: email.subject,
+        html: email.content,
+      });
+
+      email.status = EmailStatusEnum.SENT;
+    } catch (err: any) {
+      const updateFields: any = {
+        passwordResetToken: null,
+        passwordResetTokenRaw: null,
+        passwordResetTokenExpires: null,
+      };
+
+      email.error = err?.message;
+      email.status = EmailStatusEnum.ERROR;
+
+      Logger.error(err);
+
+      await UserModel.findOneAndUpdate(
+        { _id: user._id },
+        { $set: updateFields }
+      );
+    }
+
+    await EmailModel.create(email);
+
+    if (email.status === EmailStatusEnum.ERROR) {
+      throw new InternalError(
+        'There was an error while sending the reset password email. Please try again later.'
+      );
+    }
+
+    new SuccessResponse(
+      'The password reset email has been sent successfully',
+      {}
+    ).send(res);
+  });
+}
+
+export default new EmailController();

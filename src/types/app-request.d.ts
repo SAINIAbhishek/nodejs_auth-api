@@ -3,6 +3,9 @@ import User from '../models/UserModel';
 import { JwtPayload } from 'jsonwebtoken';
 
 declare interface ProtectedRequest extends Request {
+  email: {
+    user?: User;
+  };
   session: {
     accessToken?: string;
     refreshToken?: string;

@@ -8,7 +8,7 @@ export const MAILTRAP_EMAIL = {
     username: process.env.MAILTRAP_TESTING_USERNAME || '',
     password: process.env.MAILTRAP_TESTING_PASSWORD || '',
     host: process.env.MAILTRAP_TESTING_HOST || '',
-    port: process.env.MAILTRAP_TESTING_PORT || '',
+    port: parseInt(process.env.MAILTRAP_TESTING_PORT || '2525'),
   },
 };
 

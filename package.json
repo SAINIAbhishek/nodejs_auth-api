@@ -44,6 +44,7 @@
     "@types/jsonwebtoken": "^8.5.9",
     "@types/morgan": "^1.9.4",
     "@types/node": "^18.11.13",
+    "@types/nodemailer": "^6.4.11",
     "@types/request": "^2.48.8",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.46.0",

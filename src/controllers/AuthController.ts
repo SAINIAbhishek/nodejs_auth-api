@@ -34,7 +34,7 @@ class AuthController {
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   });
 
-  forgotPassword = asyncHandler(async (req, res) => {
+  forgotPassword = asyncHandler(async (req: ProtectedRequest, res, next) => {
     const { email } = req.body;
 
     const user = await UserModel.findOne({ email });
@@ -61,6 +61,12 @@ class AuthController {
       ).toString();
 
       await user.save({ validateBeforeSave: false });
+
+      req.email = {
+        user,
+      };
+
+      next();
     }
   });
 
