@@ -61,17 +61,12 @@ http://localhost:3000/api/v1/
 
 ## Testing the Routes and Functionality
 
-To test the routes and functionality of this API either you can use tool like **POSTMAN** or you can use the frontend that is another repo on the GitHub (still in developing phase): <a href="https://github.com/SAINIAbhishek/react_auth-frontend" target="_blank">React Auth Frontend</a>.)
+To test the routes and functionality of this API you can use tool like **POSTMAN**.
 
 ### As for testing this backend API using Postman:
 - Install Postman if you haven't already.
 - Start the backend server, making sure it's running on the correct port.
 - (Need to be configured) <a href="" target="_blank">API Endpoints Documentation</a>
-
-### As for integrating the frontend with the backend, you can follow these general steps:
-- Ensure that your backend server is running and accessible.
-- Clone the frontend repository from GitHub to your local machine.
-- Please refer to the specific README file of the frontend repository for any additional instructions or configuration details
 
 ### Secrets
 
