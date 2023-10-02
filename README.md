@@ -91,3 +91,4 @@ require('crypto').randomBytes(64).toString('hex')
 - Remember Me
 - Session Management
 - Postman documentation
+- Enhance logging
