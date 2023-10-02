@@ -5,7 +5,7 @@ import {
 } from '../models/RoleModel';
 import Logger from '../middleware/Logger';
 
-const roles = [RoleNameEnum.USER, RoleNameEnum.ADMIN];
+const roles = [RoleNameEnum.USER, RoleNameEnum.ADMIN, RoleNameEnum.MANAGER];
 
 export default async function initializeRoles() {
   try {
@@ -38,6 +38,14 @@ export default async function initializeRoles() {
 function rolePermissions(role: RoleNameEnum) {
   if (role === RoleNameEnum.ADMIN) {
     return Object.values(RolePermissionEnum);
+  }
+  if (role === RoleNameEnum.MANAGER) {
+    return [
+      RolePermissionEnum.VIEW,
+      RolePermissionEnum.EDIT,
+      RolePermissionEnum.SHARE,
+      RolePermissionEnum.UPDATE,
+    ];
   }
   return [RolePermissionEnum.VIEW];
 }

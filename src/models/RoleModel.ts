@@ -7,13 +7,13 @@ export const COLLECTION_NAME = 'roles';
 export enum RoleNameEnum {
   USER = 'USER',
   ADMIN = 'ADMIN',
+  MANAGER = 'MANAGER',
 }
 
 // Define the role status enum
 export enum RoleStatusEnum {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
-  DELETED = 'DELETED',
 }
 
 // Define the role permissions enum
