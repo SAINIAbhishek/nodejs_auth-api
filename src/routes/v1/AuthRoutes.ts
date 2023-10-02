@@ -44,7 +44,7 @@ router
 
 router
   .route('/resetPassword/:token')
-  .post(
+  .patch(
     validator(JOI_TOKEN_SCHEMA, ValidationSource.PARAM),
     validator(JOI_EMAIL_SCHEMA, ValidationSource.QUERY),
     validator(JOI_USER_RESET_PASSWORD_SCHEMA, ValidationSource.BODY),
