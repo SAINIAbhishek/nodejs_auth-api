@@ -26,13 +26,13 @@ export enum RolePermissionEnum {
 }
 
 export default interface Role {
-  _id: Types.ObjectId;
-  name: RoleNameEnum;
+  _id?: Types.ObjectId;
+  name?: RoleNameEnum;
   description?: string;
-  status: RoleStatusEnum;
-  permissions: RolePermissionEnum[];
-  createdAt?: Date;
-  updatedAt?: Date;
+  status?: RoleStatusEnum;
+  permissions?: RolePermissionEnum[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const RoleSchema = new Schema<Role>(

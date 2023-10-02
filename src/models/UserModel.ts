@@ -1,6 +1,7 @@
 import { model, Schema, Types } from 'mongoose';
 import Joi from 'joi';
 import UserHelper from '../helpers/UserHelper';
+import Role from './RoleModel';
 
 export const DOCUMENT_NAME = 'User';
 export const COLLECTION_NAME = 'users';
@@ -18,6 +19,7 @@ export default interface User {
   passwordResetToken?: string; // hashed token
   passwordResetTokenRaw?: string; // plain token
   passwordResetTokenExpires?: string;
+  roles?: Role[];
 }
 
 const UserSchema = new Schema<User>(
@@ -64,6 +66,16 @@ const UserSchema = new Schema<User>(
     },
     passwordResetTokenExpires: {
       type: Schema.Types.Date,
+      select: false,
+    },
+    roles: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Role',
+        },
+      ],
+      required: true,
       select: false,
     },
   },
