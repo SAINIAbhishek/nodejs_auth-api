@@ -24,6 +24,27 @@ export const JoiAuthBearer = () =>
     return value;
   }, 'Authorization Header Validation');
 
+/**
+ * to validate incoming requests to ensure that they have a valid JWT token in
+ * the authorization header. If the header is missing or doesn't match the
+ * expected format, Joi will reject the request.
+ */
+export const JOI_AUTHORIZATION_SCHEMA: Joi.ObjectSchema = Joi.object({
+  authorization: JoiAuthBearer().required(),
+}).unknown(true);
+
+export const JOI_EMAIL_SCHEMA: Joi.ObjectSchema = Joi.object({
+  email: Joi.string().min(5).max(255).email().required(),
+});
+
+export const JOI_TOKEN_SCHEMA: Joi.ObjectSchema = Joi.object({
+  token: Joi.string().required(),
+});
+
+export const JOI_ID_SCHEMA: Joi.ObjectSchema = Joi.object({
+  id: JoiObjectId().required(),
+});
+
 export default (
     schema: Joi.AnySchema,
     source: ValidationSource = ValidationSource.BODY
@@ -38,6 +59,7 @@ export default (
       const message = details
         .map((i) => i.message.replace(/['"]+/g, ''))
         .join(',');
+
       Logger.error(message);
 
       next(new BadRequestError(message));

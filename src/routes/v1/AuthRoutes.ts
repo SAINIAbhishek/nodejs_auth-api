@@ -1,11 +1,17 @@
 import express from 'express';
-import validator, { ValidationSource } from '../../helpers/Validator';
+import validator, {
+  JOI_AUTHORIZATION_SCHEMA,
+  JOI_EMAIL_SCHEMA,
+  JOI_TOKEN_SCHEMA,
+  ValidationSource,
+} from '../../helpers/Validator';
 import {
-  USER_JOI_LOGIN_SCHEMA,
-  USER_JOI_REGISTER_SCHEMA,
+  JOI_USER_LOGIN_SCHEMA,
+  JOI_USER_REGISTER_SCHEMA,
+  JOI_USER_RESET_PASSWORD_SCHEMA,
 } from '../../models/UserModel';
 import AuthController from '../../controllers/AuthController';
-import { AUTH_JOI_SCHEMA } from '../../helpers/AuthHelper';
+import EmailController from '../../controllers/EmailController';
 
 const router = express.Router();
 
@@ -15,7 +21,7 @@ router.get('/test', AuthController.test);
 router
   .route('/login')
   .post(
-    validator(USER_JOI_LOGIN_SCHEMA, ValidationSource.BODY),
+    validator(JOI_USER_LOGIN_SCHEMA, ValidationSource.BODY),
     AuthController.loginLimiter,
     AuthController.login
   );
@@ -23,8 +29,27 @@ router
 router
   .route('/register')
   .post(
-    validator(USER_JOI_REGISTER_SCHEMA, ValidationSource.BODY),
+    validator(JOI_USER_REGISTER_SCHEMA, ValidationSource.BODY),
     AuthController.register
+  );
+
+router
+  .route('/forgotPassword')
+  .post(
+    validator(JOI_EMAIL_SCHEMA, ValidationSource.BODY),
+    AuthController.forgotPasswordLimiter,
+    AuthController.forgotPassword,
+    EmailController.resetPassword
+  );
+
+router
+  .route('/resetPassword/:token')
+  .post(
+    validator(JOI_TOKEN_SCHEMA, ValidationSource.PARAM),
+    validator(JOI_EMAIL_SCHEMA, ValidationSource.QUERY),
+    validator(JOI_USER_RESET_PASSWORD_SCHEMA, ValidationSource.BODY),
+    AuthController.resetPassword,
+    EmailController.passwordUpdateSuccessfully
   );
 
 router.route('/logout').post(AuthController.logout);
@@ -32,7 +57,7 @@ router.route('/logout').post(AuthController.logout);
 router
   .route('/refresh')
   .post(
-    validator(AUTH_JOI_SCHEMA, ValidationSource.HEADER),
+    validator(JOI_AUTHORIZATION_SCHEMA, ValidationSource.HEADER),
     AuthController.isAuthorized,
     AuthController.refreshToken
   );

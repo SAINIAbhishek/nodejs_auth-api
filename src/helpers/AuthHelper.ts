@@ -1,4 +1,3 @@
-import Joi from 'joi';
 import User from '../models/UserModel';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { AuthFailureError, InternalError } from '../middleware/ApiError';
@@ -6,7 +5,6 @@ import { TOKEN_INFO } from '../config';
 import UserHelper from './UserHelper';
 import crypto from 'crypto';
 import { Types } from 'mongoose';
-import { JoiAuthBearer } from './Validator';
 import bcrypt from 'bcrypt';
 
 /**
@@ -44,6 +42,14 @@ const validatePasswordUpdate = (payload: JwtPayload, user: User): void => {
  */
 const generateTokenKey = () => {
   return crypto.randomBytes(64).toString('hex');
+};
+
+/**
+ * to generate a hash (digest) of a given key using the SHA-256 hashing algorithm
+ * @param key
+ */
+const generateHashTokenKey = (key: string) => {
+  return crypto.createHash('sha256').update(key).digest('hex');
 };
 
 /**
@@ -127,15 +133,6 @@ const createTokens = (user: User): Token => {
   } as Token;
 };
 
-/**
- * to validate incoming requests to ensure that they have a valid JWT token in
- * the authorization header. If the header is missing or doesn't match the
- * expected format, Joi will reject the request.
- */
-export const AUTH_JOI_SCHEMA: Joi.ObjectSchema = Joi.object({
-  authorization: JoiAuthBearer().required(),
-}).unknown(true);
-
 export default {
   createTokens,
   generateTokenKey,
@@ -143,4 +140,5 @@ export default {
   getAccessToken,
   validatePasswordUpdate,
   generateHashPassword,
+  generateHashTokenKey,
 };
