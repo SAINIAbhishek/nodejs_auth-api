@@ -19,12 +19,13 @@ class EmailController {
         );
       }
 
-      const message = `The password has been updated successfully. If you did not make this request, please contact your administrator.`;
+      const message =
+        'Your password has been successfully updated. If you did not initiate this change, please contact your administrator for assistance.';
 
       const email: Email = {
         to: user.email,
         subject: 'Password update successfully',
-        content: message,
+        content: EmailHelper.emailFormatter(message, user.firstname),
       };
 
       try {
@@ -61,12 +62,23 @@ class EmailController {
       user.passwordResetTokenRaw
     }?email=${user.email}`;
 
-    const message = `We have received a reset password request. Please use the below link to reset your password. <br><br> <a href="${resetUrl}" target="_blank">Reset password link</a> <br><br> This reset password link will be valid only for 1 hour. <br><br> If you did not make this request, please ignore this mail.`;
+    const message = `
+        We've received a request to reset your password. Don't worry, we've got you covered! <br><br>
+        To reset your password, simply click on the button below: <br><br>
+        <a href="${resetUrl}" target="_blank">
+          <button style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            Reset Password
+          </button>
+        </a> <br><br>
+        If you're having trouble with the button, you can also copy and paste this link into your browser's address bar: <br><br>
+        ${resetUrl} <br><br>
+        This password reset link will expire in 1 hour, so please reset your password promptly. <br><br>
+        If you didn't initiate this request or have any concerns, please ignore this message. Your account remains secure.`;
 
     const email: Email = {
       to: user.email,
       subject: 'Password change request received',
-      content: message,
+      content: EmailHelper.emailFormatter(message, user.firstname),
       url: resetUrl,
     };
 

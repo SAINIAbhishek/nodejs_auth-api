@@ -4,6 +4,21 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import Mail from 'nodemailer/lib/mailer';
 
 /**
+ * a template for formatting email content
+ * @param firstname
+ * @param content
+ */
+const emailFormatter = (content: string, firstname = '') => {
+  return `
+    Dear ${firstname}, <br><br>
+    ${content} <br><br>
+    Thank you for using our service! <br><br>
+    Best regards, <br>
+    Node.js Auth API
+  `;
+};
+
+/**
  * used to send test emails during development and testing phases.
  *
  * for sending test emails using the Nodemailer library and a service like
@@ -32,4 +47,5 @@ const testingEmailTransporter = async (
 
 export default {
   testingEmailTransporter,
+  emailFormatter,
 };
