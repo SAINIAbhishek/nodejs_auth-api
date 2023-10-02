@@ -1,7 +1,6 @@
 import { model, Schema, Types } from 'mongoose';
 import Joi from 'joi';
 import UserHelper from '../helpers/UserHelper';
-import { JoiObjectId } from '../helpers/Validator';
 
 export const DOCUMENT_NAME = 'User';
 export const COLLECTION_NAME = 'users';
@@ -16,8 +15,8 @@ export default interface User {
   createdAt?: string;
   updatedAt?: string;
   passwordUpdatedAt?: string;
-  passwordResetToken?: string;
-  passwordResetTokenRaw?: string;
+  passwordResetToken?: string; // hashed token
+  passwordResetTokenRaw?: string; // plain token
   passwordResetTokenExpires?: string;
 }
 
@@ -90,33 +89,29 @@ UserSchema.set('toJSON', {
   virtuals: true,
 });
 
-export const USER_JOI_REGISTER_SCHEMA: Joi.ObjectSchema = Joi.object({
+export const JOI_USER_REGISTER_SCHEMA: Joi.ObjectSchema = Joi.object({
   firstname: Joi.string().max(200).required(),
   lastname: Joi.string().max(200).required(),
   email: Joi.string().min(5).max(255).email().required(),
   password: Joi.string().min(8).max(255).required(),
 });
 
-export const USER_JOI_CREATE_SCHEMA: Joi.ObjectSchema = Joi.object({
+export const JOI_USER_CREATE_SCHEMA: Joi.ObjectSchema = Joi.object({
   firstname: Joi.string().max(200).required(),
   lastname: Joi.string().max(200).required(),
   email: Joi.string().min(5).max(255).email().required(),
   password: Joi.string().min(8).max(255).required(),
 });
 
-export const USER_JOI_UPDATE_SCHEMA: Joi.ObjectSchema = Joi.object({
+export const JOI_USER_UPDATE_SCHEMA: Joi.ObjectSchema = Joi.object({
   firstname: Joi.string().max(200).optional(),
   lastname: Joi.string().max(200).optional(),
   email: Joi.string().min(5).max(255).email().optional(),
 });
 
-export const USER_JOI_LOGIN_SCHEMA: Joi.ObjectSchema = Joi.object({
+export const JOI_USER_LOGIN_SCHEMA: Joi.ObjectSchema = Joi.object({
   email: Joi.string().min(5).max(255).email().required(),
   password: Joi.string().required(),
-});
-
-export const USER_JOI_ID_SCHEMA: Joi.ObjectSchema = Joi.object({
-  id: JoiObjectId().required(),
 });
 
 export const UserModel = model<User>(

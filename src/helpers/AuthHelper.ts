@@ -1,4 +1,3 @@
-import Joi from 'joi';
 import User from '../models/UserModel';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { AuthFailureError, InternalError } from '../middleware/ApiError';
@@ -6,7 +5,6 @@ import { TOKEN_INFO } from '../config';
 import UserHelper from './UserHelper';
 import crypto from 'crypto';
 import { Types } from 'mongoose';
-import { JoiAuthBearer } from './Validator';
 import bcrypt from 'bcrypt';
 
 /**
@@ -134,19 +132,6 @@ const createTokens = (user: User): Token => {
     refreshToken,
   } as Token;
 };
-
-/**
- * to validate incoming requests to ensure that they have a valid JWT token in
- * the authorization header. If the header is missing or doesn't match the
- * expected format, Joi will reject the request.
- */
-export const AUTH_JOI_SCHEMA: Joi.ObjectSchema = Joi.object({
-  authorization: JoiAuthBearer().required(),
-}).unknown(true);
-
-export const AUTH_JOI_FORGOT_PASSWORD_SCHEMA: Joi.ObjectSchema = Joi.object({
-  email: Joi.string().min(5).max(255).email().required(),
-});
 
 export default {
   createTokens,

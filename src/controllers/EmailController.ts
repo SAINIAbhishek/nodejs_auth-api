@@ -57,7 +57,9 @@ class EmailController {
 
     const resetUrl = `${req.protocol}://${req.get(
       'host'
-    )}/api/${API_VERSION}/oauth/resetPassword/${user.passwordResetTokenRaw}`;
+    )}/api/${API_VERSION}/oauth/resetPassword/${
+      user.passwordResetTokenRaw
+    }?query=${user.email}`;
 
     const message = `We have received a reset password request. Please use the below link to reset your password. <br><br> <a href="${resetUrl}" target="_blank">Reset password link</a> <br><br> This reset password link will be valid only for 1 hour. <br><br> If you did not make this request, please ignore this mail.`;
 
