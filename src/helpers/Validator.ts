@@ -33,7 +33,7 @@ export const JOI_AUTHORIZATION_SCHEMA: Joi.ObjectSchema = Joi.object({
   authorization: JoiAuthBearer().required(),
 }).unknown(true);
 
-export const JOI_EMAIl_SCHEMA: Joi.ObjectSchema = Joi.object({
+export const JOI_EMAIL_SCHEMA: Joi.ObjectSchema = Joi.object({
   email: Joi.string().min(5).max(255).email().required(),
 });
 

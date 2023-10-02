@@ -1,7 +1,7 @@
 import express from 'express';
 import validator, {
   JOI_AUTHORIZATION_SCHEMA,
-  JOI_EMAIl_SCHEMA,
+  JOI_EMAIL_SCHEMA,
   JOI_TOKEN_SCHEMA,
   ValidationSource,
 } from '../../helpers/Validator';
@@ -35,7 +35,7 @@ router
 router
   .route('/forgotPassword')
   .post(
-    validator(JOI_EMAIl_SCHEMA, ValidationSource.BODY),
+    validator(JOI_EMAIL_SCHEMA, ValidationSource.BODY),
     AuthController.forgotPasswordLimiter,
     AuthController.forgotPassword,
     EmailController.resetPassword
