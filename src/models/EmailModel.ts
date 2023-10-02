@@ -39,7 +39,6 @@ const EmailSchema = new Schema<Email>(
     url: {
       type: Schema.Types.String,
       trim: true,
-      required: true,
     },
     content: {
       type: Schema.Types.String,

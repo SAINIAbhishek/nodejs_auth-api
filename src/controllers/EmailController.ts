@@ -9,6 +9,48 @@ import { SuccessResponse } from '../middleware/ApiResponse';
 import Logger from '../middleware/Logger';
 
 class EmailController {
+  passwordUpdateSuccessfully = asyncHandler(
+    async (req: ProtectedRequest, res) => {
+      const { isPasswordUpdated, user } = req.email;
+
+      if (!isPasswordUpdated || !user) {
+        throw new BadRequestError(
+          'There was an error while resetting password. Please try again later.'
+        );
+      }
+
+      const message = `The password has been updated successfully. If you did not make this request, please contact your administrator.`;
+
+      const email: Email = {
+        to: user.email,
+        subject: 'Password update successfully',
+        content: message,
+      };
+
+      try {
+        await EmailHelper.testingEmailTransporter({
+          to: email.to,
+          subject: email.subject,
+          html: email.content,
+        });
+
+        email.status = EmailStatusEnum.SENT;
+      } catch (err: any) {
+        email.error = err?.message;
+        email.status = EmailStatusEnum.ERROR;
+
+        Logger.error(err);
+      }
+
+      await EmailModel.create(email);
+
+      new SuccessResponse(
+        'The password has been updated successfully',
+        {}
+      ).send(res);
+    }
+  );
+
   resetPassword = asyncHandler(async (req: ProtectedRequest, res) => {
     const { user } = req.email;
     if (!user) throw new BadRequestError('User is required');
@@ -17,7 +59,7 @@ class EmailController {
       'host'
     )}/api/${API_VERSION}/oauth/resetPassword/${user.passwordResetTokenRaw}`;
 
-    const message = `We have received a reset password request. Please use the below link to reset your password. <br><br> <a href="${resetUrl}" target="_blank">Reset password link</a> <br><br> This reset password link will be valid only for 1 hour.`;
+    const message = `We have received a reset password request. Please use the below link to reset your password. <br><br> <a href="${resetUrl}" target="_blank">Reset password link</a> <br><br> This reset password link will be valid only for 1 hour. <br><br> If you did not make this request, please ignore this mail.`;
 
     const email: Email = {
       to: user.email,
