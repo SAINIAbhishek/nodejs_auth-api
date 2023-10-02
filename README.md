@@ -7,18 +7,19 @@ The project structure follows the best practices and conventions of a Node.js ap
 The project has directories organized based on functionality and type, with directory names chosen to reflect their purpose.
 
 Following are the features of this project:
-- This backend is written in TypeScript, enhancing the development experience by adding static typing to JavaScript. This results in more reliable and maintainable codebases, helps catch potential errors during development, and provides better code completion and tooling support.
-- It includes a limiter to restrict excessive requests to the login route, preventing abuse or overload.
-- It features centralized error handling and response management, streamlining the codebase for easier maintenance and consistent user experience.
-- The project implements a versioning system for its routes, ensuring better organization and compatibility when evolving the API.
-- Role-based access control is implemented to grant or restrict permissions based on user roles, enhancing security and access management.
-- JSON Web Token (JWT) is used for user authentication and authorization, adding a layer of security to the application.
-- MongoDB is utilized through Mongoose, offering a NoSQL database solution that is fast and scalable, making it well-suited for modern web applications.
-- ESLint enforces coding standards and best practices in the codebase, improving code quality, maintaining consistency, identifying potential issues early, and enforcing coding best practices.
-- Prettier, a code formatter, automatically formats code to adhere to a consistent and predefined set of rules specified in the '.prettierrc' configuration file.
-- Cookies are employed to store refresh token information, enhancing user authentication and session management.
-- Winston is used for logging purposes within the application, providing a robust and flexible logging solution.
-- The project includes middleware for handling exceptions within async Express routes and forwarding them to Express error handlers, improving error management and ensuring smooth operation.
+- **TypeScript:** This backend is written in TypeScript, enhancing the development experience by adding static typing to JavaScript. This results in more reliable and maintainable codebases, helps catch potential errors during development, and provides better code completion and tooling support.
+- **Request Limiter**: This feature prevents abuse or overload of the login route, forgot password route by limiting the number of requests, enhancing security and preventing potential attacks. 
+- **Centralized Error Handling:** Centralized error handling and response management streamline the codebase, making it easier to maintain and ensuring a consistent user experience. 
+- **API Versioning:** Implementing a versioning system for routes helps with organization and ensures compatibility when evolving the API, preventing breaking changes for existing clients. 
+- **Role-Based Access Control:** Role-based access control enhances security by granting or restricting permissions based on user roles, allowing fine-grained access management. 
+- **JWT Authentication:** JSON Web Tokens (JWT) are used for user authentication and authorization, adding a layer of security to the application by securely transmitting user data. 
+- **Password Reset via Email:** Functionality to send email notifications for password resets enhances user account security and recovery options.
+- **MongoDB with Mongoose:** MongoDB is a NoSQL database that is fast and scalable, making it suitable for modern web applications. Mongoose is an ODM (Object-Document Mapper) for MongoDB that simplifies database interactions.
+- **ESLint:** ESLint enforces coding standards and best practices, improving code quality and maintaining consistency while catching potential issues early in development.
+- **Prettier:** Prettier automatically formats code according to predefined rules, ensuring a consistent code style throughout the project.
+- **Cookies for Tokens**: Using cookies to store tokens information enhances user authentication and session management, providing a secure way to maintain user sessions. 
+- **Logging:** Winston is used for logging purposes, providing a robust and flexible logging solution that helps with debugging and monitoring the application.
+- **Middleware for Exception Handling:** Middleware for handling exceptions within async Express routes and forwarding them to Express error handlers improves error management, ensuring the smooth operation of the application.
 
 ## Stacks:
 - Node.js
@@ -47,7 +48,7 @@ You can also create your credentials and place them in the .env file under the *
 npm run install:packages
 ```
 
-- Duplicate the **.env.example** file and rename the copy to **.env**. Modify the variables as needed.
+- Duplicate the **.env.example** file and rename the copy to **.env** file. Modify the variables as needed.
 
 ## How to run the project
 
@@ -68,7 +69,6 @@ http://localhost:3000/api/v1/
 
 To test the routes and functionality of this API you can use tool like **POSTMAN**.
 
-### As for testing this backend API using Postman:
 - Install Postman if you haven't already.
 - Start the backend server, making sure it's running on the correct port.
 - (Need to be configured) <a href="" target="_blank">API Endpoints Documentation</a>
