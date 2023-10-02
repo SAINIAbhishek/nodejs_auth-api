@@ -8,6 +8,7 @@ import validator, {
 import {
   JOI_USER_LOGIN_SCHEMA,
   JOI_USER_REGISTER_SCHEMA,
+  JOI_USER_RESET_PASSWORD_SCHEMA,
 } from '../../models/UserModel';
 import AuthController from '../../controllers/AuthController';
 import EmailController from '../../controllers/EmailController';
@@ -39,6 +40,16 @@ router
     AuthController.forgotPasswordLimiter,
     AuthController.forgotPassword,
     EmailController.resetPassword
+  );
+
+router
+  .route('/resetPassword/:token')
+  .post(
+    validator(JOI_TOKEN_SCHEMA, ValidationSource.PARAM),
+    validator(JOI_EMAIL_SCHEMA, ValidationSource.QUERY),
+    validator(JOI_USER_RESET_PASSWORD_SCHEMA, ValidationSource.BODY),
+    AuthController.resetPassword,
+    EmailController.passwordUpdateSuccessfully
   );
 
 router.route('/logout').post(AuthController.logout);

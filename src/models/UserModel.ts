@@ -6,11 +6,11 @@ export const DOCUMENT_NAME = 'User';
 export const COLLECTION_NAME = 'users';
 
 export default interface User {
-  _id: Types.ObjectId;
-  firstname: string;
-  lastname: string;
+  _id?: Types.ObjectId;
+  firstname?: string;
+  lastname?: string;
   name?: string;
-  email: string;
+  email?: string;
   password?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -112,6 +112,10 @@ export const JOI_USER_UPDATE_SCHEMA: Joi.ObjectSchema = Joi.object({
 export const JOI_USER_LOGIN_SCHEMA: Joi.ObjectSchema = Joi.object({
   email: Joi.string().min(5).max(255).email().required(),
   password: Joi.string().required(),
+});
+
+export const JOI_USER_RESET_PASSWORD_SCHEMA: Joi.ObjectSchema = Joi.object({
+  password: Joi.string().min(8).max(255).required(),
 });
 
 export const UserModel = model<User>(

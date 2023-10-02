@@ -70,6 +70,39 @@ class AuthController {
     }
   });
 
+  resetPassword = asyncHandler(async (req: ProtectedRequest, res, next) => {
+    const { password } = req.body;
+
+    const filter = {
+      passwordResetTokenRaw: req.params.token,
+      passwordResetToken: AuthHelper.generateHashTokenKey(req.params.token),
+      email: req.query.email,
+      passwordResetTokenExpires: { $gt: Date.now() },
+    };
+
+    const user = await UserModel.findOne(filter);
+
+    if (!user) {
+      Logger.info(`Attempted password reset, ${JSON.stringify(filter)}`);
+      throw new BadRequestError('Token is invalid or has been expired.');
+    }
+
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenRaw = undefined;
+    user.passwordResetTokenExpires = undefined;
+    user.passwordUpdatedAt = Date.now().toString();
+    user.password = await AuthHelper.generateHashPassword(password);
+
+    await user.save();
+
+    req.email = {
+      isPasswordUpdated: true,
+      user: user,
+    };
+
+    next();
+  });
+
   loginLimiter = rateLimit({
     windowMs: LIMITER.loginWS,
     max: LIMITER.loginMaxAttempt,

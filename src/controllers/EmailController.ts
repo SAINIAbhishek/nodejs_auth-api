@@ -2,7 +2,7 @@ import asyncHandler from 'express-async-handler';
 import { ProtectedRequest } from 'app-request';
 import { API_VERSION } from '../config';
 import EmailHelper from '../helpers/EmailHelper';
-import { UserModel } from '../models/UserModel';
+import User, { UserModel } from '../models/UserModel';
 import { BadRequestError, InternalError } from '../middleware/ApiError';
 import Email, { EmailModel, EmailStatusEnum } from '../models/EmailModel';
 import { SuccessResponse } from '../middleware/ApiResponse';
@@ -59,7 +59,7 @@ class EmailController {
       'host'
     )}/api/${API_VERSION}/oauth/resetPassword/${
       user.passwordResetTokenRaw
-    }?query=${user.email}`;
+    }?email=${user.email}`;
 
     const message = `We have received a reset password request. Please use the below link to reset your password. <br><br> <a href="${resetUrl}" target="_blank">Reset password link</a> <br><br> This reset password link will be valid only for 1 hour. <br><br> If you did not make this request, please ignore this mail.`;
 
@@ -79,10 +79,10 @@ class EmailController {
 
       email.status = EmailStatusEnum.SENT;
     } catch (err: any) {
-      const updateFields: any = {
-        passwordResetToken: null,
-        passwordResetTokenRaw: null,
-        passwordResetTokenExpires: null,
+      const updateFields: User = {
+        passwordResetToken: undefined,
+        passwordResetTokenRaw: undefined,
+        passwordResetTokenExpires: undefined,
       };
 
       email.error = err?.message;
