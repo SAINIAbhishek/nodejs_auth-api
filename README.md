@@ -87,7 +87,6 @@ require('crypto').randomBytes(64).toString('hex')
 <hr>
 
 #### TODO
-- Forget Password
 - Remember Me
 - Session Management
 - Postman documentation
