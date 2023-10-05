@@ -1,9 +1,15 @@
 import asyncHandler from 'express-async-handler';
 import UserHelper from '../helpers/UserHelper';
-import { BadRequestError, NotFoundError } from '../middleware/ApiError';
+import {
+  BadRequestError,
+  InternalError,
+  NotFoundError,
+} from '../middleware/ApiError';
 import { UserModel } from '../models/UserModel';
 import { SuccessResponse } from '../middleware/ApiResponse';
 import AuthHelper from '../helpers/AuthHelper';
+import RoleHelper from '../helpers/RoleHelper';
+import { RoleNameEnum } from '../models/RoleModel';
 
 class UserController {
   createNewUser = asyncHandler(async (req, res) => {
@@ -11,6 +17,9 @@ class UserController {
 
     const user = await UserHelper.findByEmail(email);
     if (user) throw new BadRequestError('User already exists');
+
+    const role = await RoleHelper.findByName(RoleNameEnum.USER, '+name');
+    if (!role) throw new InternalError('Role must be defined');
 
     // hash password
     const hashedPassword = await AuthHelper.generateHashPassword(password);

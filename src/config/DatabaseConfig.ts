@@ -1,6 +1,7 @@
 import { DB } from './index';
 import Logger from '../middleware/Logger';
 import * as mongoose from 'mongoose';
+import initializeRoles from '../scripts/roles';
 
 // Build the connection string
 const MONGO_URL = `mongodb://${DB.host}:${DB.port}/${DB.name}`;
@@ -20,8 +21,9 @@ Logger.debug('DB connection string : ' + MONGO_URL);
 // Create the database connection
 mongoose
   .connect(MONGO_URL, MONGO_CONFIG)
-  .then(() => {
+  .then(async () => {
     Logger.info('Mongoose connection established successfully!');
+    await initializeRoles();
   })
   .catch((err) => {
     Logger.info('Mongoose connection failed!');

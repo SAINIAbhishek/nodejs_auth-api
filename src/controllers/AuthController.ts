@@ -7,7 +7,11 @@ import {
   TokenRefreshResponse,
 } from '../middleware/ApiResponse';
 import UserHelper from '../helpers/UserHelper';
-import { AuthFailureError, BadRequestError } from '../middleware/ApiError';
+import {
+  AuthFailureError,
+  BadRequestError,
+  InternalError,
+} from '../middleware/ApiError';
 import bcrypt from 'bcrypt';
 import AuthHelper from '../helpers/AuthHelper';
 import { COOKIE, LIMITER, TOKEN_INFO } from '../config';
@@ -15,6 +19,8 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import { ProtectedRequest } from 'app-request';
 import { UserModel } from '../models/UserModel';
+import { RoleNameEnum, RoleStatusEnum } from '../models/RoleModel';
+import RoleHelper from '../helpers/RoleHelper';
 
 class AuthController {
   test = asyncHandler(async (_, res) => {
@@ -147,6 +153,9 @@ class AuthController {
     const user = await UserHelper.findByEmail(email);
     if (user) throw new BadRequestError('User already registered');
 
+    const role = await RoleHelper.findByName(RoleNameEnum.USER, '+name');
+    if (!role) throw new InternalError('Role must be defined');
+
     // hash password
     const hashedPassword = await AuthHelper.generateHashPassword(password);
 
@@ -155,6 +164,7 @@ class AuthController {
       password: hashedPassword,
       firstname,
       lastname,
+      roles: [role],
     };
 
     const newUser = await UserModel.create(userObj);
@@ -167,11 +177,18 @@ class AuthController {
   });
 
   login = asyncHandler(async (req, res) => {
-    const user = await UserHelper.findByEmail(req.body.email, '+password');
-    if (!user || !user.password)
+    const user = await UserHelper.findByEmail(req.body.email, '+password', [
+      {
+        path: 'roles',
+        match: { status: RoleStatusEnum.ACTIVE },
+      },
+    ]);
+
+    if (!user || !user.password) {
       throw new BadRequestError(
         'Your email address or your password is incorrect'
       );
+    }
 
     const isMatched = await bcrypt.compare(req.body.password, user.password);
     if (!isMatched)

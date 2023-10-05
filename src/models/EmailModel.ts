@@ -17,6 +17,8 @@ export default interface Email {
   content?: string;
   status?: EmailStatusEnum;
   error?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const EmailSchema = new Schema<Email>(
