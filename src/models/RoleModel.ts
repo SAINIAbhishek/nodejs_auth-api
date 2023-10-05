@@ -46,16 +46,26 @@ const RoleSchema = new Schema<Role>(
       type: Schema.Types.String,
       trim: true,
       maxlength: 255,
+      select: false,
     },
     status: {
       type: Schema.Types.String,
       enum: Object.values(RoleStatusEnum),
       default: RoleStatusEnum.ACTIVE,
+      select: false,
     },
     permissions: {
       type: [Schema.Types.String],
       enum: Object.values(RolePermissionEnum),
       default: [RolePermissionEnum.VIEW],
+    },
+    createdAt: {
+      type: Schema.Types.Date,
+      select: false,
+    },
+    updatedAt: {
+      type: Schema.Types.Date,
+      select: false,
     },
   },
   {

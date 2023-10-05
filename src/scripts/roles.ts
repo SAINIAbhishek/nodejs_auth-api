@@ -1,6 +1,6 @@
 import { RoleModel, RoleNameEnum } from '../models/RoleModel';
 import Logger from '../middleware/Logger';
-import RolePermissions from '../helpers/RolePermissions';
+import DEFAULT_ROLES from '../config/RolesConfig';
 
 const roles = [RoleNameEnum.USER, RoleNameEnum.ADMIN, RoleNameEnum.MANAGER];
 
@@ -19,7 +19,14 @@ export default async function initializeRoles() {
     if (rolesToAdd.length > 0) {
       await RoleModel.insertMany(
         rolesToAdd.map((name) => {
-          return { name: name, permissions: RolePermissions(name) };
+          const role = DEFAULT_ROLES.find((_role) => _role.name === name);
+          if (!role) return;
+
+          return {
+            name: role?.name,
+            permissions: role?.permissions,
+            _id: role?._id,
+          };
         })
       );
       Logger.info('Roles have been initialized in the database');
