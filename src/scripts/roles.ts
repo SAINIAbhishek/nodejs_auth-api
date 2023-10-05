@@ -1,9 +1,6 @@
-import {
-  RoleModel,
-  RoleNameEnum,
-  RolePermissionEnum,
-} from '../models/RoleModel';
+import { RoleModel, RoleNameEnum } from '../models/RoleModel';
 import Logger from '../middleware/Logger';
+import RolePermissions from '../helpers/RolePermissions';
 
 const roles = [RoleNameEnum.USER, RoleNameEnum.ADMIN, RoleNameEnum.MANAGER];
 
@@ -22,7 +19,7 @@ export default async function initializeRoles() {
     if (rolesToAdd.length > 0) {
       await RoleModel.insertMany(
         rolesToAdd.map((name) => {
-          return { name: name, permissions: rolePermissions(name) };
+          return { name: name, permissions: RolePermissions(name) };
         })
       );
       Logger.info('Roles have been initialized in the database');
@@ -33,19 +30,4 @@ export default async function initializeRoles() {
     Logger.info('Error while initializing roles in the database');
     Logger.error(error);
   }
-}
-
-function rolePermissions(role: RoleNameEnum) {
-  if (role === RoleNameEnum.ADMIN) {
-    return Object.values(RolePermissionEnum);
-  }
-  if (role === RoleNameEnum.MANAGER) {
-    return [
-      RolePermissionEnum.VIEW,
-      RolePermissionEnum.EDIT,
-      RolePermissionEnum.SHARE,
-      RolePermissionEnum.UPDATE,
-    ];
-  }
-  return [RolePermissionEnum.VIEW];
 }
