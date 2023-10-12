@@ -58,7 +58,7 @@ class EmailController {
 
     const resetUrl = `${req.protocol}://${req.get(
       'host'
-    )}/api/${API_VERSION}/oauth/resetPassword/${
+    )}/api/${API_VERSION}/oauth/reset-password/${
       user.passwordResetTokenRaw
     }?email=${user.email}`;
 
