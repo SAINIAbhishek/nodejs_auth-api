@@ -1,6 +1,6 @@
 export const ENVIRONMENT = process.env.NODE_ENV;
 export const PORT = process.env.PORT;
-export const CORS_URL = process.env.CORS_URL;
+export const CORS_URL = process.env.CORS_URL?.split(',') || [];
 export const API_VERSION = process.env.API_VERSION;
 
 export const MAILTRAP_EMAIL = {

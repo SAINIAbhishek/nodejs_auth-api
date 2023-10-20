@@ -229,7 +229,12 @@ class AuthController {
 
     const tokens: Token = AuthHelper.createTokens(user);
 
-    new TokenRefreshResponse('Token issued', tokens.accessToken).send(res);
+    new TokenRefreshResponse('Token issued', {
+      tokens: {
+        accessToken: tokens.accessToken,
+        user: UserHelper.sanitizedUser(user),
+      },
+    }).send(res);
   });
 
   logout = asyncHandler(async (req, res) => {

@@ -134,12 +134,12 @@ export class AccessTokenErrorResponse extends ApiResponse {
   }
 }
 
-export class TokenRefreshResponse extends ApiResponse {
-  constructor(message = 'Token Issued', private token: string) {
+export class TokenRefreshResponse<T> extends ApiResponse {
+  constructor(message = 'Token Issued', private data: T) {
     super(StatusCode.SUCCESS, ResponseStatus.SUCCESS, message);
   }
 
   send(res: Response, headers: { [key: string]: string } = {}): Response {
-    return super.prepare<TokenRefreshResponse>(res, this, headers);
+    return super.prepare<TokenRefreshResponse<T>>(res, this, headers);
   }
 }
