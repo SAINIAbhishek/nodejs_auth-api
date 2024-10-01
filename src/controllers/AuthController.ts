@@ -71,14 +71,25 @@ class AuthController {
     }
   });
 
-  resetPassword = asyncHandler(async (req: ProtectedRequest, res, next) => {
+  resetPassword = asyncHandler(async (req: ProtectedRequest, _, next) => {
     const { password, email } = req.body;
+    const { token } = req.params ?? '';
 
-    const filter = {
-      passwordResetTokenRaw: req.params.token,
-      passwordResetToken: AuthHelper.generateHashTokenKey(req.params.token),
+    let filter = {
+      passwordResetTokenRaw: token,
+      passwordResetToken: token,
       email: email,
       passwordResetTokenExpires: { $gt: Date.now() },
+    };
+
+    if (!token) {
+      Logger.info(`Attempted password reset, ${JSON.stringify(filter)}`);
+      throw new BadRequestError('Token is invalid or has been expired.');
+    }
+
+    filter = {
+      ...filter,
+      passwordResetToken: AuthHelper.generateHashTokenKey(token),
     };
 
     const user = await UserModel.findOne(filter);
@@ -117,7 +128,7 @@ class AuthController {
   });
 
   isAuthorized = asyncHandler(async (req: ProtectedRequest, _, next) => {
-    const token = AuthHelper.getAccessToken(req.headers.authorization);
+    const token = AuthHelper.getAccessToken(req.headers.authorization) || '';
     const accessTokenPayload = jwt.verify(
       token,
       TOKEN_INFO.accessTokenSecret,

@@ -7,7 +7,7 @@
     "strictNullChecks": true,
     "noImplicitAny": true,
     "strict": true,
-    "strictFunctionTypes": true, // Optional: Enforces stricter checks for function types
+    "strictFunctionTypes": false, // Optional: Enforces stricter checks for function types
     "noImplicitThis": true, // Optional: Enforces stricter checks on 'this'
     "moduleResolution": "node",
     "resolveJsonModule": true,

@@ -49,7 +49,8 @@ class UserController {
   });
 
   getUser = asyncHandler(async (req, res) => {
-    const user = await UserHelper.findById(req.params.id);
+    const { id } = req.params;
+    const user = (!!id && (await UserHelper.findById(id))) || null;
     if (!user) throw new NotFoundError('User not found');
 
     new SuccessResponse('User fetched successfully', {
