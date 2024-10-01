@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 import initializeRoles from '../scripts/roles';
 
 // Build the connection string
-const MONGO_URL = `mongodb://${DB.host}:${DB.port}/${DB.name}`;
+const MONGO_URL = `${DB.uri}${DB.name}`;
 
 const MONGO_CONFIG = {
   autoIndex: true,
@@ -16,7 +16,7 @@ const MONGO_CONFIG = {
   useUnifiedTopology: true,
 };
 
-Logger.debug('DB connection string : ' + MONGO_URL);
+Logger.debug('Mongodb connection string : ' + MONGO_URL);
 
 // Create the database connection
 mongoose

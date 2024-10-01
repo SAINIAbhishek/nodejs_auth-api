@@ -13,6 +13,7 @@ export default interface User {
   name?: string;
   email?: string;
   password?: string;
+  terms?: boolean;
   createdAt?: string;
   updatedAt?: string;
   passwordUpdatedAt?: string;
@@ -52,6 +53,11 @@ const UserSchema = new Schema<User>(
       maxlength: 255,
       select: false,
     },
+    terms: {
+      type: Schema.Types.Boolean,
+      select: false,
+      default: true,
+    },
     passwordUpdatedAt: {
       type: Schema.Types.Date,
       select: false,
@@ -76,13 +82,13 @@ const UserSchema = new Schema<User>(
         },
       ],
       required: true,
-      select: false,
+      select: true,
     },
   },
   {
     versionKey: false,
     timestamps: true,
-  }
+  },
 );
 
 UserSchema.index({ email: 1 });
@@ -106,6 +112,7 @@ export const JOI_USER_REGISTER_SCHEMA: Joi.ObjectSchema = Joi.object({
   lastname: Joi.string().max(200).required(),
   email: Joi.string().min(5).max(255).email().required(),
   password: Joi.string().min(8).max(255).required(),
+  terms: Joi.boolean().required(),
 });
 
 export const JOI_USER_CREATE_SCHEMA: Joi.ObjectSchema = Joi.object({
@@ -128,10 +135,11 @@ export const JOI_USER_LOGIN_SCHEMA: Joi.ObjectSchema = Joi.object({
 
 export const JOI_USER_RESET_PASSWORD_SCHEMA: Joi.ObjectSchema = Joi.object({
   password: Joi.string().min(8).max(255).required(),
+  email: Joi.string().min(5).max(255).email().required(),
 });
 
 export const UserModel = model<User>(
   DOCUMENT_NAME,
   UserSchema,
-  COLLECTION_NAME
+  COLLECTION_NAME,
 );

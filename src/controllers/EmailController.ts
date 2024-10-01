@@ -1,12 +1,12 @@
 import asyncHandler from 'express-async-handler';
 import { ProtectedRequest } from 'app-request';
-import { API_VERSION } from '../config';
 import EmailHelper from '../helpers/EmailHelper';
 import User, { UserModel } from '../models/UserModel';
 import { BadRequestError, InternalError } from '../middleware/ApiError';
 import Email, { EmailModel, EmailStatusEnum } from '../models/EmailModel';
 import { SuccessResponse } from '../middleware/ApiResponse';
 import Logger from '../middleware/Logger';
+import { FRONTEND_RESET_URL } from '../config';
 
 class EmailController {
   passwordUpdateSuccessfully = asyncHandler(
@@ -15,7 +15,7 @@ class EmailController {
 
       if (!isPasswordUpdated || !user) {
         throw new BadRequestError(
-          'There was an error while resetting password. Please try again later.'
+          'There was an error while resetting password. Please try again later.',
         );
       }
 
@@ -47,20 +47,16 @@ class EmailController {
 
       new SuccessResponse(
         'The password has been updated successfully',
-        {}
+        {},
       ).send(res);
-    }
+    },
   );
 
   resetPassword = asyncHandler(async (req: ProtectedRequest, res) => {
     const { user } = req.email;
     if (!user) throw new BadRequestError('User is required');
 
-    const resetUrl = `${req.protocol}://${req.get(
-      'host'
-    )}/api/${API_VERSION}/oauth/reset-password/${
-      user.passwordResetTokenRaw
-    }?email=${user.email}`;
+    const resetUrl = `${FRONTEND_RESET_URL}auth/reset-password/${user.passwordResetTokenRaw}?email=${user.email}`;
 
     const message = `
         We've received a request to reset your password. Don't worry, we've got you covered! <br><br>
@@ -104,7 +100,7 @@ class EmailController {
 
       await UserModel.findOneAndUpdate(
         { _id: user._id },
-        { $set: updateFields }
+        { $set: updateFields },
       );
     }
 
@@ -112,14 +108,13 @@ class EmailController {
 
     if (email.status === EmailStatusEnum.ERROR) {
       throw new InternalError(
-        'There was an error while sending the reset password email. Please try again later.'
+        'There was an error while sending the reset password email. Please try again later.',
       );
     }
 
-    new SuccessResponse(
-      'The password reset email has been sent successfully',
-      {}
-    ).send(res);
+    new SuccessResponse('The password reset email has been sent successfully', {
+      passwordResetToken: user.passwordResetTokenRaw,
+    }).send(res);
   });
 }
 

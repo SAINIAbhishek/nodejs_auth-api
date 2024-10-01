@@ -27,7 +27,7 @@ export default async function initializeRoles() {
             permissions: role?.permissions,
             _id: role?._id,
           };
-        })
+        }),
       );
       Logger.info('Roles have been initialized in the database');
     } else {

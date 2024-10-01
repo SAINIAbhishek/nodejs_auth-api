@@ -47,7 +47,7 @@ export const JOI_ID_SCHEMA: Joi.ObjectSchema = Joi.object({
 
 export default (
     schema: Joi.AnySchema,
-    source: ValidationSource = ValidationSource.BODY
+    source: ValidationSource = ValidationSource.BODY,
   ) =>
   (req: Request, res: Response, next: NextFunction) => {
     try {

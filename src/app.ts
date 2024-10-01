@@ -33,7 +33,7 @@ app.use(express.json({ limit: '10mb' }));
 // This middleware is used to parse incoming request bodies with urlencoded
 // payloads, such as data submitted through HTML forms.
 app.use(
-  express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 })
+  express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }),
 );
 
 // This middleware is used to enable Cross-Origin Resource Sharing (CORS)
@@ -42,7 +42,7 @@ app.use(
 // optionsSuccessStatus: 200, Set the success status for OPTIONS requests
 // credentials: true, Allow credentials (e.g., cookies) to be sent
 app.use(
-  cors({ origin: CORS_URL, optionsSuccessStatus: 200, credentials: true })
+  cors({ origin: CORS_URL, optionsSuccessStatus: 200, credentials: true }),
 );
 
 // Api Routes
@@ -53,17 +53,18 @@ app.use(`/api/${API_VERSION}`, routes);
 app.use((req, res, next) => next(new NotFoundError()));
 
 // Middleware Error Handler
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof ApiError) {
     ApiError.handle(err, res);
 
     if (err.type === ErrorType.INTERNAL)
       Logger.error(
-        `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
+        `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
       );
   } else {
     Logger.error(
-      `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
+      `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
     );
 
     if (ENVIRONMENT === 'development') {

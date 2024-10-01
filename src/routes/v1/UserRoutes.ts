@@ -15,14 +15,14 @@ const router = express.Router();
 
 router.use(
   validator(JOI_AUTHORIZATION_SCHEMA, ValidationSource.HEADER),
-  AuthController.isAuthorized
+  AuthController.isAuthorized,
 );
 
 router
   .route('/')
   .post(
     validator(JOI_USER_CREATE_SCHEMA, ValidationSource.BODY),
-    UserController.createNewUser
+    UserController.createNewUser,
   )
   .get(UserController.getAllUsers);
 
@@ -33,7 +33,7 @@ router
   .get(UserController.getUser)
   .put(
     validator(JOI_USER_UPDATE_SCHEMA, ValidationSource.BODY),
-    UserController.updateUser
+    UserController.updateUser,
   )
   .delete(UserController.deleteUser);
 

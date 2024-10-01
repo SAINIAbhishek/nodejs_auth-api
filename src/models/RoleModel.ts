@@ -71,7 +71,7 @@ const RoleSchema = new Schema<Role>(
   {
     versionKey: false,
     timestamps: true,
-  }
+  },
 );
 
 RoleSchema.index({ name: 1 });
@@ -82,5 +82,5 @@ RoleSchema.index({ updatedAt: 1 });
 export const RoleModel = model<Role>(
   DOCUMENT_NAME,
   RoleSchema,
-  COLLECTION_NAME
+  COLLECTION_NAME,
 );

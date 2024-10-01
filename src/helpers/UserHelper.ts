@@ -1,7 +1,14 @@
 import User, { UserModel } from '../models/UserModel';
 import { PopulateOptions, Types } from 'mongoose';
-import Role from '../models/RoleModel';
+import Role, { RoleStatusEnum } from '../models/RoleModel';
 import RoleHelper from './RoleHelper';
+
+const defaultPopulates = [
+  {
+    path: 'roles',
+    match: { status: RoleStatusEnum.ACTIVE },
+  },
+];
 
 const fullName = (firstname?: string, lastname?: string) => {
   return `${firstname || ''}${lastname ? ' ' + lastname : ''}`;
@@ -23,7 +30,7 @@ const sanitizedUser = (user: User, roles: Role[] = []): User => {
 const findById = async (
   id: string,
   selectFields = '',
-  populates: PopulateOptions[] = []
+  populates: PopulateOptions[] = defaultPopulates,
 ): Promise<User | null> => {
   return UserModel.findOne({ _id: new Types.ObjectId(id) })
     .select(selectFields)
@@ -34,7 +41,7 @@ const findById = async (
 const findByEmail = async (
   email: string,
   selectFields = '',
-  populates: PopulateOptions[] = []
+  populates: PopulateOptions[] = defaultPopulates,
 ): Promise<User | null> => {
   return UserModel.findOne({ email: email })
     .select(selectFields)
@@ -45,7 +52,7 @@ const findByEmail = async (
 const findAll = async (
   filter: object = {},
   selectFields = '',
-  populates: PopulateOptions[] = []
+  populates: PopulateOptions[] = defaultPopulates,
 ): Promise<User[] | []> => {
   return UserModel.find(filter).select(selectFields).populate(populates).exec();
 };

@@ -26,7 +26,7 @@ const transport: DailyRotateFile = new DailyRotateFile({
   format: format.combine(
     format.errors({ stack: true }),
     format.timestamp(),
-    format.json()
+    format.json(),
   ),
 });
 
@@ -36,7 +36,7 @@ const Logger = createLogger({
       level: logLevel,
       format: format.combine(
         format.errors({ stack: true }),
-        format.prettyPrint()
+        format.prettyPrint(),
       ),
     }),
     transport,

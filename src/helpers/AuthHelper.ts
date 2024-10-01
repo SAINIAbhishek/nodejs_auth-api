@@ -30,7 +30,7 @@ const validatePasswordUpdate = (payload: JwtPayload, user: User): void => {
 
     if (pwdTimestamp > tokenIatTimestamp) {
       throw new AuthFailureError(
-        'Password has been updated recently, please login again.'
+        'Password has been updated recently, please login again.',
       );
     }
   }
@@ -78,7 +78,7 @@ const getAccessToken = (authorization?: string) => {
  */
 const validateTokenData = (
   payload: JwtPayload,
-  message = 'Invalid Token'
+  message = 'Invalid Token',
 ): boolean => {
   if (
     !payload ||

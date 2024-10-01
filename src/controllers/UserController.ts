@@ -74,7 +74,7 @@ class UserController {
     const updatedUser = await UserModel.findOneAndUpdate(
       { _id: req.params.id },
       { $set: updateFields },
-      { new: true }
+      { new: true },
     );
 
     if (!updatedUser) {

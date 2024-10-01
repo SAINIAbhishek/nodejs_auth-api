@@ -23,11 +23,6 @@ import { RoleNameEnum, RoleStatusEnum } from '../models/RoleModel';
 import RoleHelper from '../helpers/RoleHelper';
 
 class AuthController {
-  test = asyncHandler(async (_, res) => {
-    Logger.info('User test');
-    new SuccessResponse('Test successfully!', {}).send(res);
-  });
-
   forgotPasswordLimiter = rateLimit({
     windowMs: LIMITER.forgotPasswordWS,
     max: LIMITER.forgotPasswordMaxAttempt,
@@ -49,7 +44,7 @@ class AuthController {
       Logger.info(`Attempted password reset for non-existent email: ${email}`);
       new SuccessResponse(
         'If the email exists you will receive the email to reset the password.',
-        {}
+        {},
       ).send(res);
     } else {
       // a unique reset token
@@ -63,7 +58,7 @@ class AuthController {
 
       // Setting the expiration date of a reset token
       user.passwordResetTokenExpires = new Date(
-        Date.now() + TOKEN_INFO.passwordResetTokenValidity
+        Date.now() + TOKEN_INFO.passwordResetTokenValidity,
       ).toString();
 
       await user.save({ validateBeforeSave: false });
@@ -77,12 +72,12 @@ class AuthController {
   });
 
   resetPassword = asyncHandler(async (req: ProtectedRequest, res, next) => {
-    const { password } = req.body;
+    const { password, email } = req.body;
 
     const filter = {
       passwordResetTokenRaw: req.params.token,
       passwordResetToken: AuthHelper.generateHashTokenKey(req.params.token),
-      email: req.query.email,
+      email: email,
       passwordResetTokenExpires: { $gt: Date.now() },
     };
 
@@ -125,7 +120,7 @@ class AuthController {
     const token = AuthHelper.getAccessToken(req.headers.authorization);
     const accessTokenPayload = jwt.verify(
       token,
-      TOKEN_INFO.accessTokenSecret
+      TOKEN_INFO.accessTokenSecret,
     ) as JwtPayload;
 
     AuthHelper.validateTokenData(accessTokenPayload, 'Unauthorized');
@@ -167,13 +162,11 @@ class AuthController {
       roles: [role],
     };
 
-    const newUser = await UserModel.create(userObj);
-    const tokens: Token = AuthHelper.createTokens(newUser);
+    await UserModel.create(userObj);
 
-    new SuccessResponse('User registered successfully', {
-      token: tokens.accessToken,
-      user: UserHelper.sanitizedUser(newUser),
-    }).send(res);
+    new SuccessResponse('The user has been registered successfully', {}).send(
+      res,
+    );
   });
 
   login = asyncHandler(async (req, res) => {
@@ -186,7 +179,7 @@ class AuthController {
 
     if (!user || !user.password) {
       throw new BadRequestError(
-        'Your email address or your password is incorrect'
+        'Your email address or your password is incorrect',
       );
     }
 
@@ -198,14 +191,17 @@ class AuthController {
 
     // create secure cookie with refresh token
     res.cookie(COOKIE.login, tokens.refreshToken, {
-      httpOnly: true, // //accessible only by web server
+      httpOnly: true, // accessible only by web server
       secure: true, // https
       sameSite: true, // cross-site cookie
       maxAge: COOKIE.maxAge, // cookie expiry: set to match refreshTokenValidity
     });
 
     new SuccessResponse('User logged in successfully', {
-      token: tokens.accessToken,
+      tokens: {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+      },
       user: UserHelper.sanitizedUser(user),
     }).send(res);
   });
@@ -216,7 +212,7 @@ class AuthController {
 
     const refreshTokenPayload = jwt.verify(
       refreshToken,
-      TOKEN_INFO.refreshTokenSecret
+      TOKEN_INFO.refreshTokenSecret,
     ) as JwtPayload;
 
     AuthHelper.validateTokenData(refreshTokenPayload);
@@ -232,8 +228,8 @@ class AuthController {
     new TokenRefreshResponse('Token issued', {
       tokens: {
         accessToken: tokens.accessToken,
-        user: UserHelper.sanitizedUser(user),
       },
+      user: UserHelper.sanitizedUser(user),
     }).send(res);
   });
 

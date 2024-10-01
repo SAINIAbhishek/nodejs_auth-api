@@ -1,29 +1,31 @@
 {
   "compilerOptions": {
     "module": "CommonJS",
-    // Import non-ES modules as default imports.
     "esModuleInterop": true,
-    // Target latest version of ECMAScript.
-    "target": "ES2019",
-    // Process & infer types from .js files.
+    "target": "ES2021", // or higher if needed
     "allowJs": false,
-    // Enable strictNullChecks & noImplicitAny.
     "strictNullChecks": true,
     "noImplicitAny": true,
     "strict": true,
-    "strictFunctionTypes": false,
-    "noImplicitThis": false,
-    // Search under node_modules for non-relative imports.
+    "strictFunctionTypes": true, // Optional: Enforces stricter checks for function types
+    "noImplicitThis": true, // Optional: Enforces stricter checks on 'this'
     "moduleResolution": "node",
-    // Import .json files
     "resolveJsonModule": true,
     "sourceMap": true,
     "outDir": "build",
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*", "src/types/*"]
-    }
+    },
+    "types": ["node"], // Include Node.js types
+    "skipLibCheck": true, // Skips type checking of declaration files for faster builds
+    "forceConsistentCasingInFileNames": true, // Ensures file name casing consistency
+    "noFallthroughCasesInSwitch": true, // Prevents fall-through cases in switch statements
+    "noUncheckedIndexedAccess": true, // Ensures array access is checked for undefined
+    "declaration": true, // Generates .d.ts files alongside .js files
+    "composite": true, // Enables project references
+    "incremental": true // Enables incremental builds for faster compilation
   },
   "include": ["src/**/*"],
-  "exclude": [".templates"]
+  "exclude": [".templates", "node_modules"]
 }

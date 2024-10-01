@@ -26,13 +26,13 @@ abstract class ApiResponse {
   protected constructor(
     protected statusCode: StatusCode,
     protected status: ResponseStatus,
-    protected message: string
+    protected message: string,
   ) {}
 
   protected prepare<T extends ApiResponse>(
     res: Response,
     response: T,
-    headers: { [key: string]: string }
+    headers: { [key: string]: string },
   ): Response {
     for (const [key, value] of Object.entries(headers)) res.append(key, value);
     return res.status(this.status).json(ApiResponse.sanitize(response));
@@ -40,7 +40,7 @@ abstract class ApiResponse {
 
   public send(
     res: Response,
-    headers: { [key: string]: string } = {}
+    headers: { [key: string]: string } = {},
   ): Response {
     return this.prepare<ApiResponse>(res, this, headers);
   }
@@ -124,7 +124,7 @@ export class AccessTokenErrorResponse extends ApiResponse {
     super(
       StatusCode.INVALID_ACCESS_TOKEN,
       ResponseStatus.UNAUTHORIZED,
-      message
+      message,
     );
   }
 

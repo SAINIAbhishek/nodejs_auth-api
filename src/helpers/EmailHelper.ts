@@ -26,7 +26,7 @@ const emailFormatter = (content: string, firstname = '') => {
  * @param options
  */
 const testingEmailTransporter = async (
-  options: Mail.Options
+  options: Mail.Options,
 ): Promise<SMTPTransport.SentMessageInfo> => {
   const transporter = nodemailer.createTransport({
     host: MAILTRAP_EMAIL.testing.host,
