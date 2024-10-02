@@ -29,7 +29,7 @@ class EmailController {
       };
 
       try {
-        await EmailHelper.testingEmailTransporter({
+        await EmailHelper.emailTransporter({
           to: email.to,
           subject: email.subject,
           html: email.content,
@@ -79,7 +79,7 @@ class EmailController {
     };
 
     try {
-      await EmailHelper.testingEmailTransporter({
+      await EmailHelper.emailTransporter({
         to: email.to,
         subject: email.subject,
         html: email.content,
