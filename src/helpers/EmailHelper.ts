@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { MAILTRAP_EMAIL } from '../config';
+import { MAILTRAP_EMAIL, MAILTRAP_EMAIL_ENV } from '../config';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import Mail from 'nodemailer/lib/mailer';
 
@@ -19,21 +19,24 @@ const emailFormatter = (content: string, firstname = '') => {
 };
 
 /**
- * used to send test emails during development and testing phases.
+  * used to send emails.
  *
  * for sending test emails using the Nodemailer library and a service like
- * Mailtrap for testing email delivery
- * @param options
+ * Mailtrap for email delivery
+ * @param options 
+ * @returns 
  */
-const testingEmailTransporter = async (
+const emailTransporter = async (
   options: Mail.Options,
 ): Promise<SMTPTransport.SentMessageInfo> => {
+  const isProdEnv = MAILTRAP_EMAIL_ENV === "production";
+
   const transporter = nodemailer.createTransport({
-    host: MAILTRAP_EMAIL.testing.host,
-    port: MAILTRAP_EMAIL.testing.port,
+    host: isProdEnv ? MAILTRAP_EMAIL.prod.host : MAILTRAP_EMAIL.testing.host,
+    port: isProdEnv ? MAILTRAP_EMAIL.prod.port : MAILTRAP_EMAIL.testing.port,
     auth: {
-      user: MAILTRAP_EMAIL.testing.username,
-      pass: MAILTRAP_EMAIL.testing.password,
+      user: isProdEnv ? MAILTRAP_EMAIL.prod.username : MAILTRAP_EMAIL.testing.username,
+      pass: isProdEnv ? MAILTRAP_EMAIL.prod.password : MAILTRAP_EMAIL.testing.password,
     },
   });
 
@@ -46,6 +49,6 @@ const testingEmailTransporter = async (
 };
 
 export default {
-  testingEmailTransporter,
   emailFormatter,
+  emailTransporter
 };

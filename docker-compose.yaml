@@ -1,0 +1,61 @@
+services:
+  mongodb:
+    # To create this service, Compose will pull the mongo
+    image: mongo:7.0.4
+    # a custom name for the MongoDB container
+    container_name: mongo
+    # Configures the container to restart automatically.
+    restart: always
+    # Volumes to persist data and initialize MongoDB
+    volumes:
+      # The named volume dbdata will persist the data stored in Mongo’s default data directory, /data/db.
+      # This will ensure that you don’t lose data in cases where you stop or remove containers.
+      - dbdata:/data/db
+    healthcheck:
+      test:
+        ['CMD', 'mongosh', '--quiet', '--eval', "db.adminCommand('ping').ok"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # To build node image
+  api:
+    # This defines the configuration options, including the context and dockerfile,
+    # that will be applied when Compose builds the application image.
+    build:
+      # This defines the build context for the image build
+      context: ./
+      args:
+        NODE_ENV: production
+    # This is the name we’ll use to refer to this image in Docker commands or to push to a Docker registry.
+    image: sainiabhishek/nodejs_auth-api:1.1.0
+    container_name: api
+    env_file: .env
+    restart: always
+    environment:
+      MONGO_URI: mongodb://mongo:27017/
+      MONGO_DB_HOST: mongo
+      TOKEN_ISSUER: api.prod.saini.com
+      TOKEN_AUDIENCE: prod.saini.com
+      FRONTEND_RESET_URL: http://localhost:3000/
+      CORS_URL: http://localhost:3000
+      MAILTRAP_EMAIL_ENV: testing
+    ports:
+      - ${PORT}:3001
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3001/api/v1/healthcheck']
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+# Our top-level volumes key defines the volumes dbdata.
+# When Docker creates volumes, the contents of the volume are stored in a part of the host filesystem, /var/lib/docker/volumes/, that’s managed by Docker.
+# The contents of each volume are stored in a directory under /var/lib/docker/volumes/ and get mounted to any container that uses the volume.
+# In this way, the data that our users will create will persist in the dbdata volume even if we remove and recreate the db container.
+volumes:
+  dbdata:

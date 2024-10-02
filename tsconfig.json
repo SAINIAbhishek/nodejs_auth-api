@@ -23,7 +23,6 @@
     "noFallthroughCasesInSwitch": true, // Prevents fall-through cases in switch statements
     "noUncheckedIndexedAccess": true, // Ensures array access is checked for undefined
     "declaration": true, // Generates .d.ts files alongside .js files
-    "composite": true, // Enables project references
     "incremental": true // Enables incremental builds for faster compilation
   },
   "include": ["src/**/*"],
