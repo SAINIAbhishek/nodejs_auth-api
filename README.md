@@ -89,6 +89,19 @@ node
 require('crypto').randomBytes(64).toString('hex')
 ```
 
+### Running the Project with Docker Compose
+
+- Ensure Docker is installed on your computer.
+- Copy or rename the `.env.example` file to `.env`, and fill in the required values based on your environment. Additionally, you may update the necessary values in the docker-compose.yml file as required.
+- Open your terminal.
+- Run the following command:
+
+```bash
+docker-compose up -d
+```
+
+This command will fetch all necessary libraries and dependencies, set up the environment, and start the services as defined in your docker-compose.yml file. Follow any additional setup or configuration instructions provided in the README file.
+
 #### TODO
 
 - Implement session management.
