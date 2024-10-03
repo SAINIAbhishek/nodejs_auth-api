@@ -19,3 +19,23 @@ jobs:
       cache-path: 'node_modules'
       cache-key-prefix: 'auth'
       working-directory: './'
+
+  # Step: Lint the code
+  lint-server:
+    needs: [npm] # Wait for dependencies to be installed before linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Restore Modules cache
+      - name: Restore Modules Cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-auth-${{ hashFiles('package-lock.json') }}
+
+      # Lint the server code
+      - name: Linting
+        run: npm run lint
+        working-directory: ./
