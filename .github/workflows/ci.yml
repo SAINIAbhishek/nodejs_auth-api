@@ -72,7 +72,7 @@ jobs:
       working-directory: './'
 
   # Step: Build the project
-  build-development:
+  build:
     needs: [lint, format, dependencies-check]
     runs-on: ubuntu-latest
     environment: development
@@ -109,46 +109,5 @@ jobs:
       - name: Save Devlopment Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: api-build
+          name: dev-build
           path: build
-
-  # Step: Build the project
-  # build-production:
-  #   needs: [build-development]
-  #   runs-on: ubuntu-latest
-  #   environment: production
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v3
-
-  #     # Restore Modules cache
-  #     - name: Restore Modules Cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: node_modules
-  #         key: ${{ runner.os }}-auth-${{ hashFiles('package-lock.json') }}
-
-  #     - name: Build for production
-  #       run: npm run build
-  #       working-directory: ./
-  #       env:
-  #         PORT: ${{ vars.API_PORT }}
-  #         MONGO_URI: ${{ vars.MONGO_URI }}
-  #         MONGO_DB_HOST: ${{ vars.MONGO_DB_HOST }}
-  #         TOKEN_ISSUER: ${{ vars.TOKEN_ISSUER}}
-  #         TOKEN_AUDIENCE: ${{ vars.TOKEN_AUDIENCE}}
-  #         CORS_URL: ${{ vars.CORS_URL}}
-  #         FRONTEND_RESET_URL: ${{ vars.FRONTEND_RESET_URL}}
-  #         API_VERSION: ${{ vars.API_VERSION}}
-  #         ACCESS_TOKEN_SECRET_KEY: ${{ secrets.ACCESS_TOKEN_SECRET_KEY}}
-  #         MAILTRAP_USERNAME: ${{ secrets.MAILTRAP_USERNAME}}
-  #         MAILTRAP_PASSWORD: ${{ secrets.MAILTRAP_PASSWORD}}
-  #         MAILTRAP_HOST: ${{ vars.MAILTRAP_HOST}}
-  #         REFRESH_TOKEN_SECRET_KEY: ${{ secrets.REFRESH_TOKEN_SECRET_KEY}}
-  #         MAILTRAP_EMAIL_ENV: ${{ vars.MAILTRAP_EMAIL_ENV}}
-
-  #     - name: Save Production Build Artifacts
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: api-build
-  #         path: /build
