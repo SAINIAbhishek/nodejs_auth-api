@@ -3,7 +3,7 @@ export const PORT = process.env.PORT;
 export const CORS_URL = process.env.CORS_URL?.split(',') || [];
 export const API_VERSION = process.env.API_VERSION;
 export const FRONTEND_RESET_URL = process.env.FRONTEND_RESET_URL;
-export const MAILTRAP_EMAIL_ENV = process.env.MAILTRAP_EMAIL_ENV || "testing";
+export const MAILTRAP_EMAIL_ENV = process.env.MAILTRAP_EMAIL_ENV || 'testing';
 
 export const DATE_FORMAT = process.env.DATE_FORMAT || 'yyyy-MM-dd';
 export const DATE_FULL_FORMAT =
