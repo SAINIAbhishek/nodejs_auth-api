@@ -31,6 +31,7 @@ jobs:
         run: npm run build
         working-directory: ${{ inputs['working-directory'] }}
         env:
+          NODE_ENV: ${{ inputs['environment'] }}
           PORT: ${{ vars.API_PORT }}
           MONGO_URI: ${{ vars.MONGO_URI }}
           MONGO_DB_HOST: ${{ vars.MONGO_DB_HOST }}
@@ -48,7 +49,7 @@ jobs:
           REFRESH_TOKEN_SECRET_KEY: ${{ secrets.REFRESH_TOKEN_SECRET_KEY}}
           MAILTRAP_EMAIL_ENV: ${{ vars.MAILTRAP_EMAIL_ENV}}
 
-      - name: Save ${{ inputs['environment'] }} Build Artifacts
+      - name: Save ${{ inputs['environment'] }} ${{ vars.API_PORT }} Build Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs['environment'] }}-build
