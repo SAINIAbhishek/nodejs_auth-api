@@ -1,4 +1,4 @@
-# Node.js Authentication & Authorization Backend Typescript Project (Learning project)
+# Node.js Authentication & Authorization Backend Typescript Project (Learning project) [![Node Auth Application Pipeline](https://github.com/SAINIAbhishek/nodejs_auth-api/actions/workflows/ci.yml/badge.svg)](https://github.com/SAINIAbhishek/nodejs_auth-api/actions/workflows/ci.yml)
 
 This project is a scalable, well-structured Node.js backend built with TypeScript. It's designed to handle the complexity and scale of modern applications, while being optimized for different environments.
 

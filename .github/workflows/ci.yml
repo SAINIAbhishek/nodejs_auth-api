@@ -21,7 +21,7 @@ jobs:
       working-directory: './'
 
   # Step: Lint the code
-  lint-server:
+  lint:
     needs: [npm] # Wait for dependencies to be installed before linting
     runs-on: ubuntu-latest
     steps:
@@ -36,6 +36,26 @@ jobs:
           key: ${{ runner.os }}-auth-${{ hashFiles('package-lock.json') }}
 
       # Lint the server code
-      - name: Linting
+      - name: Checking Linting
         run: npm run lint
+        working-directory: ./
+
+  # Step: Formatting
+  format:
+    needs: [npm] # Dependencies must be installed before formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Restore Modules cache
+      - name: Restore Modules Cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-auth-${{ hashFiles('package-lock.json') }}
+
+      # Format the code with Prettier
+      - name: Checking Formatting with Prettier
+        run: npm run prettier
         working-directory: ./
