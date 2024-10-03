@@ -1,15 +1,21 @@
-name: Node Auth Application Production Pipeline
+name: Build Workflow
 
-# Trigger the workflow
 on:
-  push:
-    branches:
-      - 'main'
+  workflow_call:
+    inputs:
+      environment:
+        description: 'development || production'
+        default: development
+        type: string
+      working-directory:
+        description: 'Directory where the build command will run'
+        type: string
+        default: './'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: production
+    environment: ${{ inputs['environment'] }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -21,9 +27,9 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-auth-${{ hashFiles('package-lock.json') }}
 
-      - name: Build for production
+      - name: Build for ${{ inputs['environment'] }}
         run: npm run build
-        working-directory: ./
+        working-directory: ${{ inputs['working-directory'] }}
         env:
           PORT: ${{ vars.API_PORT }}
           MONGO_URI: ${{ vars.MONGO_URI }}
@@ -34,14 +40,16 @@ jobs:
           FRONTEND_RESET_URL: ${{ vars.FRONTEND_RESET_URL}}
           API_VERSION: ${{ vars.API_VERSION}}
           ACCESS_TOKEN_SECRET_KEY: ${{ secrets.ACCESS_TOKEN_SECRET_KEY}}
+          MAILTRAP_TESTING_USERNAME: ${{ secrets.MAILTRAP_TESTING_USERNAME}}
+          MAILTRAP_TESTING_PASSWORD: ${{ secrets.MAILTRAP_TESTING_PASSWORD}}
           MAILTRAP_USERNAME: ${{ secrets.MAILTRAP_USERNAME}}
           MAILTRAP_PASSWORD: ${{ secrets.MAILTRAP_PASSWORD}}
-          MAILTRAP_HOST: ${{ vars.MAILTRAP_HOST}}
+          MAILTRAP_TESTING_HOST: ${{ vars.MAILTRAP_TESTING_HOST}}
           REFRESH_TOKEN_SECRET_KEY: ${{ secrets.REFRESH_TOKEN_SECRET_KEY}}
           MAILTRAP_EMAIL_ENV: ${{ vars.MAILTRAP_EMAIL_ENV}}
 
-      - name: Save Production Build Artifacts
+      - name: Save ${{ inputs['environment'] }} Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: prod-build
+          name: ${{ inputs['environment'] }}-build
           path: build
