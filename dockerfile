@@ -36,10 +36,6 @@ FROM node:20.17.0-slim AS production
 # Install curl
 RUN apt-get update && apt-get install -y curl
 
-# Argument and environment variable for production mode
-ARG NODE_ENV
-ENV NODE_ENV=${NODE_ENV}
-
 # Set the working directory inside the final container
 WORKDIR /app
 
