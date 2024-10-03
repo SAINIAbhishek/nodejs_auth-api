@@ -59,3 +59,14 @@ jobs:
       - name: Checking Formatting with Prettier
         run: npm run prettier
         working-directory: ./
+
+  # Step: Security audit
+  dependencies-check:
+    needs: [npm]
+    uses: SAINIAbhishek/shared-workflows/.github/workflows/security-audit.yml@main
+    with:
+      node-version: '20.17.0'
+      lock-file: 'package-lock.json'
+      cache-path: 'node_modules'
+      cache-key-prefix: 'auth'
+      working-directory: './'
