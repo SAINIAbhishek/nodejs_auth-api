@@ -2,10 +2,9 @@ name: Node Auth Application Pipeline
 
 # Trigger the workflow
 on:
-  workflow_dispatch:
   push:
     branches:
-      - 'main'
+      - '**'
 
 jobs:
   build:
