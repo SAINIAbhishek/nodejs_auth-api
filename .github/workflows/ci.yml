@@ -110,7 +110,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: api-build
-          path: /build
+          path: build
 
   # Step: Build the project
   # build-production:
