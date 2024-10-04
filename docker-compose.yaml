@@ -26,8 +26,6 @@ services:
     build:
       # This defines the build context for the image build
       context: ./
-      args:
-        NODE_ENV: production
     # This is the name we’ll use to refer to this image in Docker commands or to push to a Docker registry.
     image: sainiabhishek/nodejs_auth-api:1.1.0
     container_name: api
@@ -36,8 +34,8 @@ services:
     environment:
       MONGO_URI: mongodb://mongo:27017/
       MONGO_DB_HOST: mongo
-      TOKEN_ISSUER: api.prod.saini.com
-      TOKEN_AUDIENCE: prod.saini.com
+      TOKEN_ISSUER: api.dev.saini.com
+      TOKEN_AUDIENCE: dev.saini.com
       FRONTEND_RESET_URL: http://localhost:3000/
       CORS_URL: http://localhost:3000
       MAILTRAP_EMAIL_ENV: testing

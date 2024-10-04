@@ -19,24 +19,28 @@ const emailFormatter = (content: string, firstname = '') => {
 };
 
 /**
-  * used to send emails.
+ * used to send emails.
  *
  * for sending test emails using the Nodemailer library and a service like
  * Mailtrap for email delivery
- * @param options 
- * @returns 
+ * @param options
+ * @returns
  */
 const emailTransporter = async (
   options: Mail.Options,
 ): Promise<SMTPTransport.SentMessageInfo> => {
-  const isProdEnv = MAILTRAP_EMAIL_ENV === "production";
+  const isProdEnv = MAILTRAP_EMAIL_ENV === 'production';
 
   const transporter = nodemailer.createTransport({
     host: isProdEnv ? MAILTRAP_EMAIL.prod.host : MAILTRAP_EMAIL.testing.host,
     port: isProdEnv ? MAILTRAP_EMAIL.prod.port : MAILTRAP_EMAIL.testing.port,
     auth: {
-      user: isProdEnv ? MAILTRAP_EMAIL.prod.username : MAILTRAP_EMAIL.testing.username,
-      pass: isProdEnv ? MAILTRAP_EMAIL.prod.password : MAILTRAP_EMAIL.testing.password,
+      user: isProdEnv
+        ? MAILTRAP_EMAIL.prod.username
+        : MAILTRAP_EMAIL.testing.username,
+      pass: isProdEnv
+        ? MAILTRAP_EMAIL.prod.password
+        : MAILTRAP_EMAIL.testing.password,
     },
   });
 
@@ -50,5 +54,5 @@ const emailTransporter = async (
 
 export default {
   emailFormatter,
-  emailTransporter
+  emailTransporter,
 };

@@ -1,0 +1,74 @@
+name: Node Auth Application Pipeline
+
+# Trigger the workflow
+on:
+  push:
+    branches:
+      - '**' # Matches every branch for push events
+  pull_request:
+    branches:
+      - '**' # Matches every branch for pull request events
+
+jobs:
+  # Step: Cache and Install Dependencies
+  npm:
+    uses: SAINIAbhishek/shared-workflows/.github/workflows/cache-install-dependencies.yml@main
+    with:
+      node-version: '20.17.0'
+      lock-file: 'package-lock.json'
+      cache-path: 'node_modules'
+      cache-key-prefix: 'auth'
+      working-directory: './'
+
+  # Step: Linting check
+  lint:
+    needs: [npm]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Restore Modules Cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-auth-${{ hashFiles('package-lock.json') }}
+
+      # Lint the server code
+      - name: Checking Linting
+        run: npm run lint
+        working-directory: ./
+
+  # Step: Formatting check
+  format:
+    needs: [npm]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Restore Modules Cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-auth-${{ hashFiles('package-lock.json') }}
+
+      - name: Checking Formatting with Prettier
+        run: npm run prettier
+        working-directory: ./
+
+  # Step: Security audit check
+  dependencies:
+    needs: [npm]
+    uses: SAINIAbhishek/shared-workflows/.github/workflows/security-audit.yml@main
+    with:
+      node-version: '20.17.0'
+      lock-file: 'package-lock.json'
+      cache-path: 'node_modules'
+      cache-key-prefix: 'auth'
+      working-directory: './'
+
+  # Step: Build check
+  dev:
+    needs: [lint, format, dependencies]
+    uses: ./.github/workflows/build.yml
