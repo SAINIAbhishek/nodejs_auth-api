@@ -58,7 +58,7 @@ jobs:
         working-directory: ./
 
   # Step: Security audit check
-  dependencies-check:
+  dependencies:
     needs: [npm]
     uses: SAINIAbhishek/shared-workflows/.github/workflows/security-audit.yml@main
     with:
@@ -69,6 +69,6 @@ jobs:
       working-directory: './'
 
   # Step: Build check
-  build:
-    needs: [lint, format, dependencies-check]
+  dev:
+    needs: [lint, format, dependencies]
     uses: ./.github/workflows/build.yml
