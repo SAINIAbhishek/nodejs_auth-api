@@ -24,6 +24,7 @@ yarn-error.log*
 #temp
 temp
 .DS_Store
+.tsbuildinfo
 
 # ignore logs
 logs

@@ -10,7 +10,7 @@
     "watch": "npx concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold,red.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-node": "nodemon -r dotenv/config build/server.js",
     "clean": "npx rimraf ./build",
-    "build-ts": "npx tsc",
+    "build-ts": "npx tsc --project tsconfig.prod.json",
     "watch-ts": "npx tsc -w",
     "lint": "npx eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "npm run lint --fix",

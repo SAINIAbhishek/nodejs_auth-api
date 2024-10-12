@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "sourceMap": false, // Disable source maps for production
+    "removeComments": true, // Remove comments to reduce bundle size
+    "declaration": false, // Disable declaration files if not needed in production
+    "noImplicitReturns": true // Ensure all code paths return a value
+  }
+}
