@@ -1,7 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Logger from '../middleware/Logger';
 import {
-  ManyRequestResponse,
   SuccessMsgResponse,
   SuccessResponse,
   TokenRefreshResponse,
@@ -16,23 +15,17 @@ import bcrypt from 'bcrypt';
 import AuthHelper from '../helpers/AuthHelper';
 import { COOKIE, LIMITER, TOKEN_INFO } from '../config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import rateLimit from 'express-rate-limit';
 import { ProtectedRequest } from 'app-request';
 import { UserModel } from '../models/UserModel';
 import { RoleNameEnum, RoleStatusEnum } from '../models/RoleModel';
 import RoleHelper from '../helpers/RoleHelper';
+import LimiterHelper from '../helpers/LimiterHelper';
 
 class AuthController {
-  forgotPasswordLimiter = rateLimit({
+  forgotPasswordLimiter = LimiterHelper.createRateLimiter({
     windowMs: LIMITER.forgotPasswordWS,
     max: LIMITER.forgotPasswordMaxAttempt,
-    message: 'Too many reset passwords attempts, please try again later.',
-    handler: (req, res, _, options) => {
-      Logger.info(`${options.message}, Method: ${req.method}, Url: ${req.url}`);
-      new ManyRequestResponse(options.message).send(res);
-    },
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    message: 'Too many reset password attempts, please try again later.',
   });
 
   forgotPassword = asyncHandler(async (req: ProtectedRequest, res, next) => {
@@ -115,16 +108,10 @@ class AuthController {
     next();
   });
 
-  loginLimiter = rateLimit({
+  loginLimiter = LimiterHelper.createRateLimiter({
     windowMs: LIMITER.loginWS,
     max: LIMITER.loginMaxAttempt,
     message: 'Too many login attempts, please try again later.',
-    handler: (req, res, _, options) => {
-      Logger.info(`${options.message}, Method: ${req.method}, Url: ${req.url}`);
-      new ManyRequestResponse(options.message).send(res);
-    },
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   });
 
   isAuthorized = asyncHandler(async (req: ProtectedRequest, _, next) => {

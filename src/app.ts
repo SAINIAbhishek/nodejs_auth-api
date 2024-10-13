@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import Logger from './middleware/Logger';
-import { API_VERSION, CORS_URL, ENVIRONMENT } from './config';
+import { API_VERSION, CORS_URL, ENVIRONMENT, LIMITER } from './config';
 import cors from 'cors';
 import helmet from 'helmet';
 import './config/DatabaseConfig'; // initialize database
@@ -12,12 +12,22 @@ import {
   NotFoundError,
 } from './middleware/ApiError';
 import routes from './routes/v1';
+import LimiterHelper from './helpers/LimiterHelper';
 
 process.on('uncaughtException', (e) => {
   Logger.error(e);
 });
 
 const app = express();
+
+// Apply rate limiting to all requests
+app.use(
+  LimiterHelper.createRateLimiter({
+    windowMs: LIMITER.ipWS, // 15 minutes
+    max: LIMITER.ipMaxAttempt, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests, please try again later.',
+  }),
+);
 
 // This middleware is responsible to enable cookie parsing
 // commonly used to parse cookies from the incoming HTTP request headers.

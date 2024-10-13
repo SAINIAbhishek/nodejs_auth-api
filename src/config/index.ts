@@ -26,10 +26,12 @@ export const MAILTRAP_EMAIL = {
 
 export const LIMITER = {
   loginWS: parseInt(process.env.LIMITER_LOGIN_WS || '120000'),
+  ipWS: parseInt(process.env.LIMITER_IP_WS || '900000'),
   forgotPasswordWS: parseInt(
     process.env.LIMITER_FORGOT_PASSWORD_WS || '120000',
   ),
   loginMaxAttempt: parseInt(process.env.LIMITER_LOGIN_ATTEMPT || '5'),
+  ipMaxAttempt: parseInt(process.env.LIMITER_IP_ATTEMPT || '100'),
   forgotPasswordMaxAttempt: parseInt(
     process.env.LIMITER_FORGOT_PASSWORD_ATTEMPT || '2',
   ),
