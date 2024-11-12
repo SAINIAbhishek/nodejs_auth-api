@@ -23,7 +23,7 @@ class EmailController {
         'Your password has been successfully updated. If you did not initiate this change, please contact your administrator for assistance.';
 
       const email: Email = {
-        to: user.email,
+        to: user.email || '',
         subject: 'Password update successfully',
         content: EmailHelper.emailFormatter(message, user.firstname),
       };
@@ -72,7 +72,7 @@ class EmailController {
         If you didn't initiate this request or have any concerns, please ignore this message. Your account remains secure.`;
 
     const email: Email = {
-      to: user.email,
+      to: user.email || '',
       subject: 'Password change request received',
       content: EmailHelper.emailFormatter(message, user.firstname),
       url: resetUrl,

@@ -57,4 +57,23 @@ const findAll = async (
   return UserModel.find(filter).select(selectFields).populate(populates).exec();
 };
 
-export default { findByEmail, fullName, findById, sanitizedUser, findAll };
+const findByIdAndUpdate = async (
+  id = '',
+  updateFields: {
+    [key: string]: any;
+  },
+  populates: PopulateOptions[] = defaultPopulates,
+): Promise<User | null> => {
+  return UserModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true })
+    .populate(populates)
+    .exec();
+};
+
+export default {
+  findByEmail,
+  fullName,
+  findById,
+  sanitizedUser,
+  findAll,
+  findByIdAndUpdate,
+};

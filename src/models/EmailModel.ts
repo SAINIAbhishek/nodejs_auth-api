@@ -11,10 +11,10 @@ export enum EmailStatusEnum {
 
 export default interface Email {
   _id?: Types.ObjectId;
-  subject?: string;
-  to?: string;
+  subject: string;
+  to: string;
   url?: string;
-  content?: string;
+  content: string;
   status?: EmailStatusEnum;
   error?: string;
   createdAt?: string;

@@ -27,6 +27,7 @@ RUN rm -rf \
     .eslintignore \
     .prettierignore \
     tsconfig.json \
+    tsconfig.prod.json \
     .prettierrc \
     .eslintrc.json
 

@@ -60,23 +60,16 @@ class UserController {
 
   updateUser = asyncHandler(async (req, res) => {
     const { email, firstname, lastname } = req.body;
-    const updateFields: any = {};
+    const updateFields: { [key: string]: any } = { email, firstname, lastname };
 
-    if (email) {
-      updateFields.email = email;
-    }
-    if (firstname) {
-      updateFields.firstname = firstname;
-    }
-    if (lastname) {
-      updateFields.lastname = lastname;
-    }
-
-    const updatedUser = await UserModel.findOneAndUpdate(
-      { _id: req.params.id },
-      { $set: updateFields },
-      { new: true },
+    // Remove undefined fields
+    Object.keys(updateFields).forEach(
+      (key) => updateFields[key] === undefined && delete updateFields[key],
     );
+
+    const { id } = req.params;
+
+    const updatedUser = await UserHelper.findByIdAndUpdate(id, updateFields);
 
     if (!updatedUser) {
       throw new NotFoundError('User not found');

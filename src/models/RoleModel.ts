@@ -26,11 +26,11 @@ export enum RolePermissionEnum {
 }
 
 export default interface Role {
-  _id?: Types.ObjectId;
-  name?: RoleNameEnum;
+  _id: Types.ObjectId;
+  name: RoleNameEnum;
   description?: string;
   status?: RoleStatusEnum;
-  permissions?: RolePermissionEnum[];
+  permissions: RolePermissionEnum[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -59,14 +59,6 @@ const RoleSchema = new Schema<Role>(
       enum: Object.values(RolePermissionEnum),
       default: [RolePermissionEnum.VIEW],
     },
-    createdAt: {
-      type: Schema.Types.Date,
-      select: false,
-    },
-    updatedAt: {
-      type: Schema.Types.Date,
-      select: false,
-    },
   },
   {
     versionKey: false,
@@ -76,8 +68,6 @@ const RoleSchema = new Schema<Role>(
 
 RoleSchema.index({ name: 1 });
 RoleSchema.index({ status: 1 });
-RoleSchema.index({ createdAt: 1 });
-RoleSchema.index({ updatedAt: 1 });
 
 export const RoleModel = model<Role>(
   DOCUMENT_NAME,

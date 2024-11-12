@@ -175,10 +175,8 @@ class AuthController {
       },
     ]);
 
-    if (!user || !user.password) {
-      throw new BadRequestError(
-        'Your email address or your password is incorrect',
-      );
+    if (!user?.password) {
+      throw new BadRequestError('Your email address or password is incorrect');
     }
 
     const isMatched = await bcrypt.compare(req.body.password, user.password);
