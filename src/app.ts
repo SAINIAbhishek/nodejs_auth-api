@@ -13,6 +13,8 @@ import {
 } from './middleware/ApiError';
 import routes from './routes/v1';
 import LimiterHelper from './helpers/LimiterHelper';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpecs from '../swaggerConfig';
 
 process.on('uncaughtException', (e) => {
   Logger.error(e);
@@ -57,6 +59,13 @@ app.use(
 
 // Api Routes
 app.use(`/api/${API_VERSION}`, routes);
+
+// Swagger route to serve API docs
+app.use(
+  `/api-docs/${API_VERSION}`,
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpecs),
+);
 
 // The middleware function is executed for all incoming requests that don't
 // match any of the routes defined earlier.

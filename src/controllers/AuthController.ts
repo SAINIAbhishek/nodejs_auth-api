@@ -172,6 +172,7 @@ class AuthController {
       {
         path: 'roles',
         match: { status: RoleStatusEnum.ACTIVE },
+        select: '-createdAt -updatedAt',
       },
     ]);
 

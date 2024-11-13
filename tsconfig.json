@@ -25,6 +25,6 @@
     "declaration": true, // Generates .d.ts files alongside .js files
     "incremental": true // Enables incremental builds for faster compilation
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "swaggerConfig.ts"],
   "exclude": [".templates", "node_modules"]
 }

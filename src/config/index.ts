@@ -1,5 +1,6 @@
 export const ENVIRONMENT = process.env.NODE_ENV;
 export const PORT = process.env.PORT;
+export const SERVER_URL = process.env.SERVER_URL || 'http://localhost:3001';
 export const CORS_URL = process.env.CORS_URL?.split(',') || [];
 export const API_VERSION = process.env.API_VERSION;
 export const FRONTEND_RESET_URL = process.env.FRONTEND_RESET_URL;
