@@ -19,6 +19,7 @@ The codebase follows best practices for Node.js development, with a logical dire
 - **Cookies for Tokens:** Uses cookies to store tokens securely, improving authentication and session management.
 - **Logging:** Utilizes Winston for robust and flexible logging, aiding in debugging and monitoring.
 - **Middleware for Exception Handling:** Improves error management within async Express routes.
+- **Swagger (OpenAPI):** Automatically generates API documentation, allowing easy access to all available endpoints and their descriptions.
 
 ## Stacks
 
@@ -35,6 +36,7 @@ The codebase follows best practices for Node.js development, with a logical dire
 - Roles
 - Nodemailer
 - Docker image ([API Image](https://hub.docker.com/r/sainiabhishek/nodejs_auth-api))
+- Swagger (OpenAPI)
 
 ### Setup MAILTRAP
 
@@ -67,13 +69,22 @@ npm run watch
 http://localhost:3001/api/v1/
 ```
 
+### Swagger UI
+
+To access the interactive Swagger documentation for the API, navigate to:
+
+```bash
+http://localhost:3001/api-docs/v1/
+```
+
+This will open a web page where you can view and interact with all available API endpoints. Swagger allows you to explore the API, see request and response formats, and even make requests directly from the interface.
+
 ### Testing with Postman
 
 You can test the API routes using Postman. Follow these steps:
 
 - Ensure Postman is installed.
 - Start the server and verify it's running on the correct port.
-- (API Endpoints Documentation - Coming Soon)
 
 ### Generating Secret Tokens
 
@@ -104,6 +115,7 @@ This command will fetch all necessary libraries and dependencies, set up the env
 
 #### TODO
 
+- Email Verification (Account Activation)
 - Implement session management.
 - Complete Postman documentation.
 - Improve logging functionality.
