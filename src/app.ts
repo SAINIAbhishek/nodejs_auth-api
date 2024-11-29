@@ -1,30 +1,11 @@
-import express, { NextFunction, Request, Response } from 'express';
-import Logger from './middleware/Logger';
-import { API_VERSION, CORS_URL, ENVIRONMENT, LIMITER } from './config';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import './config/DatabaseConfig'; // initialize database
 import cookieParser from 'cookie-parser';
-import { ApiError, ErrorType, InternalError, NotFoundError } from './middleware/ApiError';
 import routes from './routes/v1';
-import LimiterHelper from './helpers/LimiterHelper';
-import swaggerUi from 'swagger-ui-express';
-import swaggerSpecs from './swaggerConfig';
-
-process.on('uncaughtException', (e) => {
-  Logger.error(e);
-});
+import config from './config';
 
 const app = express();
-
-// Apply rate limiting to all requests
-app.use(
-  LimiterHelper.createRateLimiter({
-    windowMs: LIMITER.ipWS, // 15 minutes
-    max: LIMITER.ipMaxAttempt, // limit each IP to 100 requests per windowMs
-    message: 'Too many requests, please try again later.',
-  })
-);
 
 // This middleware is responsible to enable cookie parsing
 // commonly used to parse cookies from the incoming HTTP request headers.
@@ -46,36 +27,9 @@ app.use(express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 5000
 // origin: CORS_URL, Allow requests from this origin
 // optionsSuccessStatus: 200, Set the success status for OPTIONS requests
 // credentials: true, Allow credentials (e.g., cookies) to be sent
-app.use(cors({ origin: CORS_URL, optionsSuccessStatus: 200, credentials: true }));
+app.use(cors({ origin: config.cors.allowedOrigins, optionsSuccessStatus: 200, credentials: true }));
 
 // Api Routes
-app.use(`/api/${API_VERSION}`, routes);
-
-// Swagger route to serve API docs
-app.use(`/api-docs/${API_VERSION}`, swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
-
-// The middleware function is executed for all incoming requests that don't
-// match any of the routes defined earlier.
-app.use((req, res, next) => next(new NotFoundError()));
-
-// Middleware Error Handler
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof ApiError) {
-    ApiError.handle(err, res);
-
-    if (err.type === ErrorType.INTERNAL)
-      Logger.error(`500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
-  } else {
-    Logger.error(`500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
-
-    if (ENVIRONMENT === 'development') {
-      Logger.error(err);
-      res.status(500).json({ error: err.message });
-    } else {
-      ApiError.handle(new InternalError(), res);
-    }
-  }
-});
+app.use(`/api/${config.server.apiVersion}`, routes);
 
 export default app;
