@@ -1,0 +1,25 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const helmet_1 = __importDefault(require("helmet"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const v1_1 = __importDefault(require("./routes/v1"));
+const config_1 = __importDefault(require("./config"));
+const error_service_1 = require("./services/error-service");
+const error_handler_1 = __importDefault(require("./middleware/error-handler"));
+const rate_limiter_service_1 = __importDefault(require("./services/rate-limiter-service"));
+const app = (0, express_1.default)();
+app.use((0, cookie_parser_1.default)());
+app.use((0, helmet_1.default)());
+app.use(express_1.default.json({ limit: '10mb' }));
+app.use(express_1.default.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }));
+app.use((0, cors_1.default)({ origin: config_1.default.cors.allowedOrigins, optionsSuccessStatus: 200, credentials: true }));
+app.use(rate_limiter_service_1.default.ipLimiter);
+app.use(`/api/${config_1.default.server.apiVersion}`, v1_1.default);
+app.use((_req, _res, next) => next(new error_service_1.NotFoundError()));
+app.use(error_handler_1.default);
+exports.default = app;
