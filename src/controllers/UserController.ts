@@ -1,10 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import UserHelper from '../helpers/UserHelper';
-import {
-  BadRequestError,
-  InternalError,
-  NotFoundError,
-} from '../middleware/ApiError';
+import { BadRequestError, InternalError, NotFoundError } from '../middleware/ApiError';
 import { UserModel } from '../models/UserModel';
 import { SuccessResponse } from '../middleware/ApiResponse';
 import AuthHelper from '../helpers/AuthHelper';
@@ -64,7 +60,7 @@ class UserController {
 
     // Remove undefined fields
     Object.keys(updateFields).forEach(
-      (key) => updateFields[key] === undefined && delete updateFields[key],
+      (key) => updateFields[key] === undefined && delete updateFields[key]
     );
 
     const { id } = req.params;

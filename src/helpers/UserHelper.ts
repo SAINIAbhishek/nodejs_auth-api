@@ -22,7 +22,7 @@ const sanitizedUser = (user: User, roles: Role[] = []): User => {
     firstname: user.firstname,
     lastname: user.lastname,
     name: fullName(user.firstname, user.lastname),
-    roles: !!roles.length ? RoleHelper.sanitizedRoles(roles) : user.roles ?? [],
+    roles: !!roles.length ? RoleHelper.sanitizedRoles(roles) : (user.roles ?? []),
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
@@ -31,7 +31,7 @@ const sanitizedUser = (user: User, roles: Role[] = []): User => {
 const findById = async (
   id: string,
   selectFields = '',
-  populates: PopulateOptions[] = defaultPopulates,
+  populates: PopulateOptions[] = defaultPopulates
 ): Promise<User | null> => {
   return UserModel.findOne({ _id: new Types.ObjectId(id) })
     .select(selectFields)
@@ -42,18 +42,15 @@ const findById = async (
 const findByEmail = async (
   email: string,
   selectFields = '',
-  populates: PopulateOptions[] = defaultPopulates,
+  populates: PopulateOptions[] = defaultPopulates
 ): Promise<User | null> => {
-  return UserModel.findOne({ email: email })
-    .select(selectFields)
-    .populate(populates)
-    .exec();
+  return UserModel.findOne({ email: email }).select(selectFields).populate(populates).exec();
 };
 
 const findAll = async (
   filter: object = {},
   selectFields = '',
-  populates: PopulateOptions[] = defaultPopulates,
+  populates: PopulateOptions[] = defaultPopulates
 ): Promise<User[] | []> => {
   return UserModel.find(filter).select(selectFields).populate(populates).exec();
 };
@@ -63,7 +60,7 @@ const findByIdAndUpdate = async (
   updateFields: {
     [key: string]: any;
   },
-  populates: PopulateOptions[] = defaultPopulates,
+  populates: PopulateOptions[] = defaultPopulates
 ): Promise<User | null> => {
   return UserModel.findByIdAndUpdate(id, { $set: updateFields }, { new: true })
     .populate(populates)

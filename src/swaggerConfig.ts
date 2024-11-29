@@ -1,7 +1,7 @@
 import swaggerJsdoc from 'swagger-jsdoc';
-import { API_VERSION, SERVER_URL } from './src/config';
+import { API_VERSION, SERVER_URL } from './config';
 import path from 'path';
-import Logger from './src/middleware/Logger';
+import Logger from './middleware/Logger';
 
 const options = {
   definition: {

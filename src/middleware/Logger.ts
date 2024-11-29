@@ -23,21 +23,14 @@ const transport: DailyRotateFile = new DailyRotateFile({
   handleExceptions: true,
   maxSize: '20m',
   maxFiles: '14d',
-  format: format.combine(
-    format.errors({ stack: true }),
-    format.timestamp(),
-    format.json(),
-  ),
+  format: format.combine(format.errors({ stack: true }), format.timestamp(), format.json()),
 });
 
 const Logger = createLogger({
   transports: [
     new transports.Console({
       level: logLevel,
-      format: format.combine(
-        format.errors({ stack: true }),
-        format.prettyPrint(),
-      ),
+      format: format.combine(format.errors({ stack: true }), format.prettyPrint()),
     }),
     transport,
   ],

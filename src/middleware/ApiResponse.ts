@@ -26,22 +26,19 @@ abstract class ApiResponse {
   protected constructor(
     protected statusCode: StatusCode,
     protected status: ResponseStatus,
-    protected message: string,
+    protected message: string
   ) {}
 
   protected prepare<T extends ApiResponse>(
     res: Response,
     response: T,
-    headers: { [key: string]: string },
+    headers: { [key: string]: string }
   ): Response {
     for (const [key, value] of Object.entries(headers)) res.append(key, value);
     return res.status(this.status).json(ApiResponse.sanitize(response));
   }
 
-  public send(
-    res: Response,
-    headers: { [key: string]: string } = {},
-  ): Response {
+  public send(res: Response, headers: { [key: string]: string } = {}): Response {
     return this.prepare<ApiResponse>(res, this, headers);
   }
 
@@ -108,7 +105,10 @@ export class FailureMsgResponse extends ApiResponse {
 }
 
 export class SuccessResponse<T> extends ApiResponse {
-  constructor(message = 'Success', private data: T) {
+  constructor(
+    message = 'Success',
+    private data: T
+  ) {
     super(StatusCode.SUCCESS, ResponseStatus.SUCCESS, message);
   }
 
@@ -121,11 +121,7 @@ export class AccessTokenErrorResponse extends ApiResponse {
   private instruction = 'refreshToken';
 
   constructor(message = 'Access token invalid') {
-    super(
-      StatusCode.INVALID_ACCESS_TOKEN,
-      ResponseStatus.UNAUTHORIZED,
-      message,
-    );
+    super(StatusCode.INVALID_ACCESS_TOKEN, ResponseStatus.UNAUTHORIZED, message);
   }
 
   send(res: Response, headers: { [key: string]: string } = {}): Response {
@@ -135,7 +131,10 @@ export class AccessTokenErrorResponse extends ApiResponse {
 }
 
 export class TokenRefreshResponse<T> extends ApiResponse {
-  constructor(message = 'Token Issued', private data: T) {
+  constructor(
+    message = 'Token Issued',
+    private data: T
+  ) {
     super(StatusCode.SUCCESS, ResponseStatus.SUCCESS, message);
   }
 

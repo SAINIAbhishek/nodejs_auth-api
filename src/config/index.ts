@@ -7,8 +7,7 @@ export const FRONTEND_RESET_URL = process.env.FRONTEND_RESET_URL;
 export const MAILTRAP_EMAIL_ENV = process.env.MAILTRAP_EMAIL_ENV || 'testing';
 
 export const DATE_FORMAT = process.env.DATE_FORMAT || 'yyyy-MM-dd';
-export const DATE_FULL_FORMAT =
-  process.env.DATE_FULL_FORMAT || 'yyyy-MM-dd HH:mm:ss.SSS';
+export const DATE_FULL_FORMAT = process.env.DATE_FULL_FORMAT || 'yyyy-MM-dd HH:mm:ss.SSS';
 
 export const MAILTRAP_EMAIL = {
   testing: {
@@ -28,14 +27,10 @@ export const MAILTRAP_EMAIL = {
 export const LIMITER = {
   loginWS: parseInt(process.env.LIMITER_LOGIN_WS || '120000'),
   ipWS: parseInt(process.env.LIMITER_IP_WS || '900000'),
-  forgotPasswordWS: parseInt(
-    process.env.LIMITER_FORGOT_PASSWORD_WS || '120000',
-  ),
+  forgotPasswordWS: parseInt(process.env.LIMITER_FORGOT_PASSWORD_WS || '120000'),
   loginMaxAttempt: parseInt(process.env.LIMITER_LOGIN_ATTEMPT || '5'),
   ipMaxAttempt: parseInt(process.env.LIMITER_IP_ATTEMPT || '100'),
-  forgotPasswordMaxAttempt: parseInt(
-    process.env.LIMITER_FORGOT_PASSWORD_ATTEMPT || '2',
-  ),
+  forgotPasswordMaxAttempt: parseInt(process.env.LIMITER_FORGOT_PASSWORD_ATTEMPT || '2'),
 };
 
 export const COOKIE = {
@@ -59,9 +54,7 @@ export const DB = {
 export const TOKEN_INFO = {
   accessTokenValidity: parseInt(process.env.ACCESS_TOKEN_VALIDITY_SEC || '0'),
   refreshTokenValidity: parseInt(process.env.REFRESH_TOKEN_VALIDITY_SEC || '0'),
-  passwordResetTokenValidity: parseInt(
-    process.env.PASSWORD_RESET_TOKEN_VALIDITY_SEC || '0',
-  ),
+  passwordResetTokenValidity: parseInt(process.env.PASSWORD_RESET_TOKEN_VALIDITY_SEC || '0'),
   issuer: process.env.TOKEN_ISSUER || '',
   audience: process.env.TOKEN_AUDIENCE || '',
   accessTokenSecret: process.env.ACCESS_TOKEN_SECRET_KEY || '',

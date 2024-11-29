@@ -20,15 +20,12 @@ router
   .post(
     validator(JOI_USER_LOGIN_SCHEMA, ValidationSource.BODY),
     AuthController.loginLimiter,
-    AuthController.login,
+    AuthController.login
   );
 
 router
   .route('/register')
-  .post(
-    validator(JOI_USER_REGISTER_SCHEMA, ValidationSource.BODY),
-    AuthController.register,
-  );
+  .post(validator(JOI_USER_REGISTER_SCHEMA, ValidationSource.BODY), AuthController.register);
 
 router
   .route('/forgotPassword')
@@ -36,7 +33,7 @@ router
     validator(JOI_EMAIL_SCHEMA, ValidationSource.BODY),
     AuthController.forgotPasswordLimiter,
     AuthController.forgotPassword,
-    EmailController.resetPassword,
+    EmailController.resetPassword
   );
 
 router
@@ -45,7 +42,7 @@ router
     validator(JOI_TOKEN_SCHEMA, ValidationSource.PARAM),
     validator(JOI_USER_RESET_PASSWORD_SCHEMA, ValidationSource.BODY),
     AuthController.resetPassword,
-    EmailController.passwordUpdateSuccessfully,
+    EmailController.passwordUpdateSuccessfully
   );
 
 router.route('/logout').post(AuthController.logout);
@@ -55,7 +52,7 @@ router
   .post(
     validator(JOI_AUTHORIZATION_SCHEMA, ValidationSource.HEADER),
     AuthController.isAuthorized,
-    AuthController.refreshToken,
+    AuthController.refreshToken
   );
 
 export default router;

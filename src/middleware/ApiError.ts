@@ -25,7 +25,10 @@ export enum ErrorType {
 }
 
 export abstract class ApiError extends Error {
-  protected constructor(public type: ErrorType, public message = 'error') {
+  protected constructor(
+    public type: ErrorType,
+    public message = 'error'
+  ) {
     super(type);
   }
 

@@ -9,48 +9,43 @@ import Logger from '../middleware/Logger';
 import { FRONTEND_RESET_URL } from '../config';
 
 class EmailController {
-  passwordUpdateSuccessfully = asyncHandler(
-    async (req: ProtectedRequest, res) => {
-      const { isPasswordUpdated, user } = req.email;
+  passwordUpdateSuccessfully = asyncHandler(async (req: ProtectedRequest, res) => {
+    const { isPasswordUpdated, user } = req.email;
 
-      if (!isPasswordUpdated || !user) {
-        throw new BadRequestError(
-          'There was an error while resetting password. Please try again later.',
-        );
-      }
+    if (!isPasswordUpdated || !user) {
+      throw new BadRequestError(
+        'There was an error while resetting password. Please try again later.'
+      );
+    }
 
-      const message =
-        'Your password has been successfully updated. If you did not initiate this change, please contact your administrator for assistance.';
+    const message =
+      'Your password has been successfully updated. If you did not initiate this change, please contact your administrator for assistance.';
 
-      const email: Email = {
-        to: user.email || '',
-        subject: 'Password update successfully',
-        content: EmailHelper.emailFormatter(message, user.firstname),
-      };
+    const email: Email = {
+      to: user.email || '',
+      subject: 'Password update successfully',
+      content: EmailHelper.emailFormatter(message, user.firstname),
+    };
 
-      try {
-        await EmailHelper.emailTransporter({
-          to: email.to,
-          subject: email.subject,
-          html: email.content,
-        });
+    try {
+      await EmailHelper.emailTransporter({
+        to: email.to,
+        subject: email.subject,
+        html: email.content,
+      });
 
-        email.status = EmailStatusEnum.SENT;
-      } catch (err: any) {
-        email.error = err?.message;
-        email.status = EmailStatusEnum.ERROR;
+      email.status = EmailStatusEnum.SENT;
+    } catch (err: any) {
+      email.error = err?.message;
+      email.status = EmailStatusEnum.ERROR;
 
-        Logger.error(err);
-      }
+      Logger.error(err);
+    }
 
-      await EmailModel.create(email);
+    await EmailModel.create(email);
 
-      new SuccessResponse(
-        'The password has been updated successfully',
-        {},
-      ).send(res);
-    },
-  );
+    new SuccessResponse('The password has been updated successfully', {}).send(res);
+  });
 
   resetPassword = asyncHandler(async (req: ProtectedRequest, res) => {
     const { user } = req.email;
@@ -98,17 +93,14 @@ class EmailController {
 
       Logger.error(err);
 
-      await UserModel.findOneAndUpdate(
-        { _id: user._id },
-        { $set: updateFields },
-      );
+      await UserModel.findOneAndUpdate({ _id: user._id }, { $set: updateFields });
     }
 
     await EmailModel.create(email);
 
     if (email.status === EmailStatusEnum.ERROR) {
       throw new InternalError(
-        'There was an error while sending the reset password email. Please try again later.',
+        'There was an error while sending the reset password email. Please try again later.'
       );
     }
 

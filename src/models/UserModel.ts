@@ -88,7 +88,7 @@ const UserSchema = new Schema<User>(
   {
     versionKey: false,
     timestamps: true,
-  },
+  }
 );
 
 UserSchema.index({ email: 1 });
@@ -138,8 +138,4 @@ export const JOI_USER_RESET_PASSWORD_SCHEMA: Joi.ObjectSchema = Joi.object({
   email: Joi.string().min(5).max(255).email().required(),
 });
 
-export const UserModel = model<User>(
-  DOCUMENT_NAME,
-  UserSchema,
-  COLLECTION_NAME,
-);
+export const UserModel = model<User>(DOCUMENT_NAME, UserSchema, COLLECTION_NAME);

@@ -26,21 +26,15 @@ const emailFormatter = (content: string, firstname = '') => {
  * @param options
  * @returns
  */
-const emailTransporter = async (
-  options: Mail.Options,
-): Promise<SMTPTransport.SentMessageInfo> => {
+const emailTransporter = async (options: Mail.Options): Promise<SMTPTransport.SentMessageInfo> => {
   const isProdEnv = MAILTRAP_EMAIL_ENV === 'production';
 
   const transporter = nodemailer.createTransport({
     host: isProdEnv ? MAILTRAP_EMAIL.prod.host : MAILTRAP_EMAIL.testing.host,
     port: isProdEnv ? MAILTRAP_EMAIL.prod.port : MAILTRAP_EMAIL.testing.port,
     auth: {
-      user: isProdEnv
-        ? MAILTRAP_EMAIL.prod.username
-        : MAILTRAP_EMAIL.testing.username,
-      pass: isProdEnv
-        ? MAILTRAP_EMAIL.prod.password
-        : MAILTRAP_EMAIL.testing.password,
+      user: isProdEnv ? MAILTRAP_EMAIL.prod.username : MAILTRAP_EMAIL.testing.username,
+      pass: isProdEnv ? MAILTRAP_EMAIL.prod.password : MAILTRAP_EMAIL.testing.password,
     },
   });
 

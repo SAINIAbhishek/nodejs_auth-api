@@ -63,14 +63,10 @@ const RoleSchema = new Schema<Role>(
   {
     versionKey: false,
     timestamps: true,
-  },
+  }
 );
 
 RoleSchema.index({ name: 1 });
 RoleSchema.index({ status: 1 });
 
-export const RoleModel = model<Role>(
-  DOCUMENT_NAME,
-  RoleSchema,
-  COLLECTION_NAME,
-);
+export const RoleModel = model<Role>(DOCUMENT_NAME, RoleSchema, COLLECTION_NAME);

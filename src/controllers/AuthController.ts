@@ -6,11 +6,7 @@ import {
   TokenRefreshResponse,
 } from '../middleware/ApiResponse';
 import UserHelper from '../helpers/UserHelper';
-import {
-  AuthFailureError,
-  BadRequestError,
-  InternalError,
-} from '../middleware/ApiError';
+import { AuthFailureError, BadRequestError, InternalError } from '../middleware/ApiError';
 import bcrypt from 'bcrypt';
 import AuthHelper from '../helpers/AuthHelper';
 import { COOKIE, LIMITER, TOKEN_INFO } from '../config';
@@ -37,7 +33,7 @@ class AuthController {
       Logger.info(`Attempted password reset for non-existent email: ${email}`);
       new SuccessResponse(
         'If the email exists you will receive the email to reset the password.',
-        {},
+        {}
       ).send(res);
     } else {
       // a unique reset token
@@ -51,7 +47,7 @@ class AuthController {
 
       // Setting the expiration date of a reset token
       user.passwordResetTokenExpires = new Date(
-        Date.now() + TOKEN_INFO.passwordResetTokenValidity,
+        Date.now() + TOKEN_INFO.passwordResetTokenValidity
       ).toString();
 
       await user.save({ validateBeforeSave: false });
@@ -116,10 +112,7 @@ class AuthController {
 
   isAuthorized = asyncHandler(async (req: ProtectedRequest, _, next) => {
     const token = AuthHelper.getAccessToken(req.headers.authorization) || '';
-    const accessTokenPayload = jwt.verify(
-      token,
-      TOKEN_INFO.accessTokenSecret,
-    ) as JwtPayload;
+    const accessTokenPayload = jwt.verify(token, TOKEN_INFO.accessTokenSecret) as JwtPayload;
 
     AuthHelper.validateTokenData(accessTokenPayload, 'Unauthorized');
 
@@ -162,9 +155,7 @@ class AuthController {
 
     await UserModel.create(userObj);
 
-    new SuccessResponse('The user has been registered successfully', {}).send(
-      res,
-    );
+    new SuccessResponse('The user has been registered successfully', {}).send(res);
   });
 
   login = asyncHandler(async (req, res) => {
@@ -181,8 +172,7 @@ class AuthController {
     }
 
     const isMatched = await bcrypt.compare(req.body.password, user.password);
-    if (!isMatched)
-      throw new AuthFailureError('Your credentials are incorrect');
+    if (!isMatched) throw new AuthFailureError('Your credentials are incorrect');
 
     const tokens: Token = AuthHelper.createTokens(user);
 
@@ -209,7 +199,7 @@ class AuthController {
 
     const refreshTokenPayload = jwt.verify(
       refreshToken,
-      TOKEN_INFO.refreshTokenSecret,
+      TOKEN_INFO.refreshTokenSecret
     ) as JwtPayload;
 
     AuthHelper.validateTokenData(refreshTokenPayload);

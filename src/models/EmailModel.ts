@@ -59,7 +59,7 @@ const EmailSchema = new Schema<Email>(
   {
     versionKey: false,
     timestamps: true,
-  },
+  }
 );
 
 EmailSchema.index({ to: 1 });
@@ -67,8 +67,4 @@ EmailSchema.index({ status: 1 });
 EmailSchema.index({ createdAt: 1 });
 EmailSchema.index({ updatedAt: 1 });
 
-export const EmailModel = model<Email>(
-  DOCUMENT_NAME,
-  EmailSchema,
-  COLLECTION_NAME,
-);
+export const EmailModel = model<Email>(DOCUMENT_NAME, EmailSchema, COLLECTION_NAME);

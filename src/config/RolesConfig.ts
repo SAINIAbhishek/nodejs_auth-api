@@ -1,8 +1,4 @@
-import Role, {
-  RoleNameEnum,
-  RolePermissionEnum,
-  RoleStatusEnum,
-} from '../models/RoleModel';
+import Role, { RoleNameEnum, RolePermissionEnum, RoleStatusEnum } from '../models/RoleModel';
 import { Types } from 'mongoose';
 
 const DEFAULT_ROLES: Role[] = [

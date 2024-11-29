@@ -10,14 +10,8 @@ const sanitizedRoles = (roles: Role[] = []): Role[] => {
   });
 };
 
-const findByName = async (
-  name: RoleNameEnum,
-  selectFields = '',
-): Promise<Role | null> => {
-  return await RoleModel.findOne({ name: name })
-    .select(selectFields)
-    .lean()
-    .exec();
+const findByName = async (name: RoleNameEnum, selectFields = ''): Promise<Role | null> => {
+  return await RoleModel.findOne({ name: name }).select(selectFields).lean().exec();
 };
 
 export default {

@@ -29,9 +29,7 @@ const validatePasswordUpdate = (payload: JwtPayload, user: User): void => {
     const pwdTimestamp = new Date(user.passwordUpdatedAt).getTime() / 1000; // converting it into milliseconds
 
     if (pwdTimestamp > tokenIatTimestamp) {
-      throw new AuthFailureError(
-        'Password has been updated recently, please login again.',
-      );
+      throw new AuthFailureError('Password has been updated recently, please login again.');
     }
   }
 };
@@ -63,8 +61,7 @@ const generateHashTokenKey = (key: string) => {
  */
 const getAccessToken = (authorization?: string) => {
   if (!authorization) throw new AuthFailureError('Unauthorized');
-  if (!authorization.startsWith('Bearer '))
-    throw new AuthFailureError('Unauthorized');
+  if (!authorization.startsWith('Bearer ')) throw new AuthFailureError('Unauthorized');
   return authorization.split(' ')[1];
 };
 
@@ -76,10 +73,7 @@ const getAccessToken = (authorization?: string) => {
  * @param payload
  * @param message
  */
-const validateTokenData = (
-  payload: JwtPayload,
-  message = 'Invalid Token',
-): boolean => {
+const validateTokenData = (payload: JwtPayload, message = 'Invalid Token'): boolean => {
   if (
     !payload ||
     !payload.iss ||

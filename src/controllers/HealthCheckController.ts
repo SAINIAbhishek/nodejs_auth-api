@@ -3,10 +3,7 @@ import { SuccessResponse } from '../middleware/ApiResponse';
 
 class HealthCheckController {
   checkHealth = asyncHandler(async (req, res) => {
-    new SuccessResponse(
-      'The API is up and running. Health check is passed.',
-      {},
-    ).send(res);
+    new SuccessResponse('The API is up and running. Health check is passed.', {}).send(res);
   });
 }
 

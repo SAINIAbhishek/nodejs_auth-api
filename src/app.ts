@@ -5,16 +5,11 @@ import cors from 'cors';
 import helmet from 'helmet';
 import './config/DatabaseConfig'; // initialize database
 import cookieParser from 'cookie-parser';
-import {
-  ApiError,
-  ErrorType,
-  InternalError,
-  NotFoundError,
-} from './middleware/ApiError';
+import { ApiError, ErrorType, InternalError, NotFoundError } from './middleware/ApiError';
 import routes from './routes/v1';
 import LimiterHelper from './helpers/LimiterHelper';
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpecs from '../swaggerConfig';
+import swaggerSpecs from './swaggerConfig';
 
 process.on('uncaughtException', (e) => {
   Logger.error(e);
@@ -28,7 +23,7 @@ app.use(
     windowMs: LIMITER.ipWS, // 15 minutes
     max: LIMITER.ipMaxAttempt, // limit each IP to 100 requests per windowMs
     message: 'Too many requests, please try again later.',
-  }),
+  })
 );
 
 // This middleware is responsible to enable cookie parsing
@@ -44,28 +39,20 @@ app.use(express.json({ limit: '10mb' }));
 
 // This middleware is used to parse incoming request bodies with urlencoded
 // payloads, such as data submitted through HTML forms.
-app.use(
-  express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }),
-);
+app.use(express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }));
 
 // This middleware is used to enable Cross-Origin Resource Sharing (CORS)
 // in application.
 // origin: CORS_URL, Allow requests from this origin
 // optionsSuccessStatus: 200, Set the success status for OPTIONS requests
 // credentials: true, Allow credentials (e.g., cookies) to be sent
-app.use(
-  cors({ origin: CORS_URL, optionsSuccessStatus: 200, credentials: true }),
-);
+app.use(cors({ origin: CORS_URL, optionsSuccessStatus: 200, credentials: true }));
 
 // Api Routes
 app.use(`/api/${API_VERSION}`, routes);
 
 // Swagger route to serve API docs
-app.use(
-  `/api-docs/${API_VERSION}`,
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpecs),
-);
+app.use(`/api-docs/${API_VERSION}`, swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // The middleware function is executed for all incoming requests that don't
 // match any of the routes defined earlier.
@@ -78,13 +65,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     ApiError.handle(err, res);
 
     if (err.type === ErrorType.INTERNAL)
-      Logger.error(
-        `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
-      );
+      Logger.error(`500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
   } else {
-    Logger.error(
-      `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
-    );
+    Logger.error(`500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
 
     if (ENVIRONMENT === 'development') {
       Logger.error(err);
