@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "outDir": "./build",
     "rootDir": "./src",
-    "baseUrl": "./",
+    "baseUrl": "/",
     "resolveJsonModule": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -29,6 +29,6 @@
       "*": ["node_modules/*", "src/types/*"]
     }
   },
-  "include": ["src/**/*", "src/types/**/*.d.ts", "src/swaggerConfig.ts"],
+  "include": ["src/**/*", "src/types/**/*.d.ts"],
   "exclude": ["node_modules", "build", "dist"]
 }

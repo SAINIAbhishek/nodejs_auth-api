@@ -2,7 +2,7 @@
   "name": "nodejs_auth-api",
   "version": "1.2.0",
   "description": "A backend authentication & authorization project to handle the scale and complexity of an application. It is design while keeping the different environments in the mind.",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "npm run build && npm run serve",
     "serve": "node -r dotenv/config build/server.js",
