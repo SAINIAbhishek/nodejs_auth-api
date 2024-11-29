@@ -1,20 +1,25 @@
 {
-  "rules": {
-    "@typescript-eslint/naming-convention": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/explicit-function-return-types": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off"
+  "env": {
+    "node": true,
+    "jest": true
   },
   "extends": [
-    "plugin:@typescript-eslint/recommended" // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:prettier/recommended"
   ],
+  "ignorePatterns": [".eslintrc.json", "build", "node_modules"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest", // Allows for the parsing of modern ECMAScript features
     "sourceType": "module" // Allows for the use of imports
   },
-  "env": {
-    "node": true
+  "rules": {
+    "no-console": "warn",
+    "no-undef": "error",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "prefer-const": "error"
   }
 }
