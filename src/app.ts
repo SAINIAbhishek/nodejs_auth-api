@@ -7,6 +7,7 @@ import config from './config';
 import errorHandler from './middleware/error-handler';
 import { NotFoundError } from './services/error-service';
 import { connectToDatabase } from './config/db-config';
+import RateLimiterService from './services/rate-limiter-service';
 
 /**
  * Initialize the MongoDB connection
@@ -14,6 +15,11 @@ import { connectToDatabase } from './config/db-config';
 connectToDatabase();
 
 const app = express();
+
+/**
+ * This middleware is responsible to apply rate limiting to all requests
+ */
+app.use(RateLimiterService.ipLimiter);
 
 /**
  * This middleware is responsible to enable cookie parsing
