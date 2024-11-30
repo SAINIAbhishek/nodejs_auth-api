@@ -1,98 +1,82 @@
-import express, { NextFunction, Request, Response } from 'express';
-import Logger from './middleware/Logger';
-import { API_VERSION, CORS_URL, ENVIRONMENT, LIMITER } from './config';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import './config/DatabaseConfig'; // initialize database
 import cookieParser from 'cookie-parser';
-import {
-  ApiError,
-  ErrorType,
-  InternalError,
-  NotFoundError,
-} from './middleware/ApiError';
 import routes from './routes/v1';
-import LimiterHelper from './helpers/LimiterHelper';
-import swaggerUi from 'swagger-ui-express';
-import swaggerSpecs from '../swaggerConfig';
+import config from './config';
+import errorHandler from './middleware/error-handler';
+import { NotFoundError } from './services/error-service';
+import { connectToDatabase } from './config/db-config';
+import RateLimiterService from './services/rate-limiter-service';
+import SwaggerService from './services/swagger-service';
 
-process.on('uncaughtException', (e) => {
-  Logger.error(e);
-});
+/**
+ * Initialize the MongoDB connection
+ */
+connectToDatabase();
 
 const app = express();
 
-// Apply rate limiting to all requests
-app.use(
-  LimiterHelper.createRateLimiter({
-    windowMs: LIMITER.ipWS, // 15 minutes
-    max: LIMITER.ipMaxAttempt, // limit each IP to 100 requests per windowMs
-    message: 'Too many requests, please try again later.',
-  }),
-);
+/**
+ * This middleware is responsible to apply rate limiting to all requests
+ */
+app.use(RateLimiterService.ipLimiter);
 
-// This middleware is responsible to enable cookie parsing
-// commonly used to parse cookies from the incoming HTTP request headers.
+/**
+ * This middleware is responsible to enable cookie parsing
+ * commonly used to parse cookies from the incoming HTTP request headers.
+ */
 app.use(cookieParser());
 
-// This middleware is a collection of security-related HTTP headers that help
-// protect application against common web vulnerabilities
+/**
+ * This middleware is a collection of security-related HTTP headers that help
+ * protect application against common web vulnerabilities
+ */
 app.use(helmet());
 
 // This middleware is used to parse incoming JSON payloads in HTTP requests.
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: config.server.jsonPayloadLimit }));
 
-// This middleware is used to parse incoming request bodies with urlencoded
-// payloads, such as data submitted through HTML forms.
+/**
+ * This middleware is used to parse incoming request bodies with urlencoded
+ * payloads, such as data submitted through HTML forms.
+ */
 app.use(
-  express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }),
+  express.urlencoded({
+    limit: config.server.jsonPayloadLimit,
+    extended: true,
+    parameterLimit: config.server.jsonPayloadParameterLimit,
+  })
 );
 
-// This middleware is used to enable Cross-Origin Resource Sharing (CORS)
-// in application.
-// origin: CORS_URL, Allow requests from this origin
-// optionsSuccessStatus: 200, Set the success status for OPTIONS requests
-// credentials: true, Allow credentials (e.g., cookies) to be sent
-app.use(
-  cors({ origin: CORS_URL, optionsSuccessStatus: 200, credentials: true }),
-);
+/**
+ * This middleware is used to enable Cross-Origin Resource Sharing (CORS)
+ * in application.
+ * origin: CORS_URL, Allow requests from this origin
+ * optionsSuccessStatus: 200, Set the success status for OPTIONS requests
+ * credentials: true, Allow credentials (e.g., cookies) to be sent
+ */
+app.use(cors({ origin: config.cors.allowedOrigins, optionsSuccessStatus: 200, credentials: true }));
 
-// Api Routes
-app.use(`/api/${API_VERSION}`, routes);
+/**
+ * Api Routes
+ */
+app.use(`/api/${config.server.apiVersion}`, routes);
 
-// Swagger route to serve API docs
-app.use(
-  `/api-docs/${API_VERSION}`,
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpecs),
-);
+/**
+ * Swagger Service Initialization
+ */
+const swaggerService = new SwaggerService(app);
+swaggerService.setupSwagger();
 
-// The middleware function is executed for all incoming requests that don't
-// match any of the routes defined earlier.
-app.use((req, res, next) => next(new NotFoundError()));
+/**
+ * 404 Not Found Handler
+ */
+app.use((_req, _res, next) => next(new NotFoundError()));
 
-// Middleware Error Handler
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof ApiError) {
-    ApiError.handle(err, res);
-
-    if (err.type === ErrorType.INTERNAL)
-      Logger.error(
-        `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
-      );
-  } else {
-    Logger.error(
-      `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
-    );
-
-    if (ENVIRONMENT === 'development') {
-      Logger.error(err);
-      res.status(500).json({ error: err.message });
-    } else {
-      ApiError.handle(new InternalError(), res);
-    }
-  }
-});
+/**
+ * Error Handling Middleware
+ */
+app.use(errorHandler);
 
 export default app;

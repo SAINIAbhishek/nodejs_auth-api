@@ -24,11 +24,10 @@ RUN rm -rf \
     node_modules/.bin \
     src \
     *.md \
-    .eslintignore \
     .prettierignore \
+    .prettierrc \
     tsconfig.json \
     tsconfig.prod.json \
-    .prettierrc \
     .eslintrc.json
 
 # Stage 2: Production Stage
