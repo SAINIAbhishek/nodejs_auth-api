@@ -1,41 +1,7 @@
-import { model, Schema, Types } from 'mongoose';
+import { model, Schema } from 'mongoose';
+import { Role, RoleNameEnum, RoleStatusEnum, RolePermissionEnum } from '../types/role-type';
 
-export const DOCUMENT_NAME = 'Role';
-export const COLLECTION_NAME = 'roles';
-
-// Define the role name enum
-export enum RoleNameEnum {
-  USER = 'USER',
-  ADMIN = 'ADMIN',
-  MANAGER = 'MANAGER',
-}
-
-// Define the role status enum
-export enum RoleStatusEnum {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-}
-
-// Define the role permissions enum
-export enum RolePermissionEnum {
-  EDIT = 'EDIT',
-  VIEW = 'VIEW',
-  DELETE = 'DELETE',
-  SHARE = 'SHARE',
-  UPDATE = 'UPDATE',
-}
-
-export default interface Role {
-  _id: Types.ObjectId;
-  name: RoleNameEnum;
-  description?: string;
-  status?: RoleStatusEnum;
-  permissions: RolePermissionEnum[];
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-const RoleSchema = new Schema<Role>(
+const schema = new Schema<Role>(
   {
     name: {
       type: Schema.Types.String,
@@ -66,7 +32,9 @@ const RoleSchema = new Schema<Role>(
   }
 );
 
-RoleSchema.index({ name: 1 });
-RoleSchema.index({ status: 1 });
+schema.index({ name: 1 });
 
-export const RoleModel = model<Role>(DOCUMENT_NAME, RoleSchema, COLLECTION_NAME);
+export const DOCUMENT_NAME = 'Role';
+export const COLLECTION_NAME = 'roles';
+
+export const RoleModel = model<Role>(DOCUMENT_NAME, schema, COLLECTION_NAME);
