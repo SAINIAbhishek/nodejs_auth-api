@@ -18,7 +18,7 @@ const options = {
   },
   apis: [
     path.resolve(__dirname, `./routes/${config.server.apiVersion}/**/*.js`),
-    path.resolve(__dirname, `./swagger-docs/**/*.js`),
+    path.resolve(__dirname, `./api-docs/**/*.js`),
   ],
 };
 

@@ -116,7 +116,4 @@ This command will fetch all necessary libraries and dependencies, set up the env
 #### TODO
 
 - Email Verification (Account Activation)
-- Implement session management.
-- Complete Postman documentation.
-- Improve logging functionality.
 - Implement Testing: Add comprehensive unit and integration tests to ensure code reliability and maintainability.

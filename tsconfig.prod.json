@@ -6,5 +6,5 @@
     "declaration": false,
     "noImplicitReturns": true
   },
-  "exclude": ["node_modules", "src/swagger-docs"]
+  "exclude": ["node_modules", "src/api-docs"]
 }

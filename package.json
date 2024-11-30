@@ -1,6 +1,6 @@
 {
   "name": "nodejs_auth-api",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A backend authentication & authorization project to handle the scale and complexity of an application. It is design while keeping the different environments in the mind.",
   "main": "index.js",
   "scripts": {
