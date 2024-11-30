@@ -8,6 +8,7 @@ import errorHandler from './middleware/error-handler';
 import { NotFoundError } from './services/error-service';
 import { connectToDatabase } from './config/db-config';
 import RateLimiterService from './services/rate-limiter-service';
+import SwaggerService from './services/swagger-service';
 
 /**
  * Initialize the MongoDB connection
@@ -61,6 +62,12 @@ app.use(cors({ origin: config.cors.allowedOrigins, optionsSuccessStatus: 200, cr
  * Api Routes
  */
 app.use(`/api/${config.server.apiVersion}`, routes);
+
+/**
+ * Swagger Service Initialization
+ */
+const swaggerService = new SwaggerService(app);
+swaggerService.setupSwagger();
 
 /**
  * 404 Not Found Handler
