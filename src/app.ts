@@ -6,6 +6,12 @@ import routes from './routes/v1';
 import config from './config';
 import errorHandler from './middleware/error-handler';
 import { NotFoundError } from './services/error-service';
+import { connectToDatabase } from './config/db-config';
+
+/**
+ * Initialize the MongoDB connection
+ */
+connectToDatabase();
 
 const app = express();
 
