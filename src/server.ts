@@ -6,12 +6,10 @@ import logger from './middleware/logging-handler';
 const port = config.server.port;
 
 const startServer = () => {
-  // Start the server and log the success message
   const server = app.listen(port, () => {
     logger.info(`Server is running on port: ${port}`);
   });
 
-  // Handle server errors
   server.on('error', (error) => {
     logger.error(`Server error: ${error.message}`);
   });

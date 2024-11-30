@@ -10,7 +10,7 @@ import {
 } from './response-service';
 import config from '../config';
 
-enum ErrorType {
+export enum ErrorType {
   BAD_TOKEN = 'Bad Token Error',
   TOKEN_EXPIRED = 'Token Expired Error',
   UNAUTHORIZED = 'Authentication Failure Error',

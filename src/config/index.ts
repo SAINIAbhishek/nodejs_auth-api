@@ -7,6 +7,8 @@ const config: Config = {
     url: process.env.SERVER_URL || 'http://localhost:3001',
     apiVersion: process.env.API_VERSION || 'v1',
     emailEnv: process.env.MAILTRAP_EMAIL_ENV || 'testing',
+    jsonPayloadLimit: process.env.JSON_PAYLOAD_LIMIT || '10mb',
+    jsonPayloadParameterLimit: parseInt(process.env.JSON_PAYLOAD_PARAMETER_LIMIT || '5000'),
   },
   cors: {
     allowedOrigins: process.env.CORS_URL?.split(',') || ['http://localhost:3000'],

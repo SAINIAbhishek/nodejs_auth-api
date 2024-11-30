@@ -4,32 +4,60 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import routes from './routes/v1';
 import config from './config';
+import errorHandler from './middleware/error-handler';
+import { NotFoundError } from './services/error-service';
 
 const app = express();
 
-// This middleware is responsible to enable cookie parsing
-// commonly used to parse cookies from the incoming HTTP request headers.
+/**
+ * This middleware is responsible to enable cookie parsing
+ * commonly used to parse cookies from the incoming HTTP request headers.
+ */
 app.use(cookieParser());
 
-// This middleware is a collection of security-related HTTP headers that help
-// protect application against common web vulnerabilities
+/**
+ * This middleware is a collection of security-related HTTP headers that help
+ * protect application against common web vulnerabilities
+ */
 app.use(helmet());
 
 // This middleware is used to parse incoming JSON payloads in HTTP requests.
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: config.server.jsonPayloadLimit }));
 
-// This middleware is used to parse incoming request bodies with urlencoded
-// payloads, such as data submitted through HTML forms.
-app.use(express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }));
+/**
+ * This middleware is used to parse incoming request bodies with urlencoded
+ * payloads, such as data submitted through HTML forms.
+ */
+app.use(
+  express.urlencoded({
+    limit: config.server.jsonPayloadLimit,
+    extended: true,
+    parameterLimit: config.server.jsonPayloadParameterLimit,
+  })
+);
 
-// This middleware is used to enable Cross-Origin Resource Sharing (CORS)
-// in application.
-// origin: CORS_URL, Allow requests from this origin
-// optionsSuccessStatus: 200, Set the success status for OPTIONS requests
-// credentials: true, Allow credentials (e.g., cookies) to be sent
+/**
+ * This middleware is used to enable Cross-Origin Resource Sharing (CORS)
+ * in application.
+ * origin: CORS_URL, Allow requests from this origin
+ * optionsSuccessStatus: 200, Set the success status for OPTIONS requests
+ * credentials: true, Allow credentials (e.g., cookies) to be sent
+ */
 app.use(cors({ origin: config.cors.allowedOrigins, optionsSuccessStatus: 200, credentials: true }));
 
-// Api Routes
+/**
+ * Api Routes
+ */
 app.use(`/api/${config.server.apiVersion}`, routes);
+
+/**
+ * 404 Not Found Handler
+ */
+app.use((_req, _res, next) => next(new NotFoundError()));
+
+/**
+ * Error Handling Middleware
+ */
+app.use(errorHandler);
 
 export default app;

@@ -11,6 +11,8 @@ type server = {
   url: string;
   apiVersion: string;
   emailEnv: string;
+  jsonPayloadLimit: string;
+  jsonPayloadParameterLimit: number;
 };
 
 type limiter = {
